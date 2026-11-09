@@ -82,12 +82,17 @@ def build_sign_chart(profile: Profile) -> Chart:
         repr(sorted(profile.signs.items())).encode("utf-8")
     ).hexdigest()[:16]
 
+    if profile.birth is not None:
+        jd = ephemeris.to_jd(profile.birth.utc_dt())
+    else:
+        jd = ephemeris.to_jd(datetime.now(timezone.utc))
+
     return Chart(
         profile_id=profile.id,
         name=profile.name,
         role=profile.role,
-        birth=None,
-        jd=ephemeris.to_jd(datetime.now(timezone.utc)),
+        birth=profile.birth,
+        jd=jd,
         positions=positions,
         houses=houses,
         angles=angles,
@@ -99,6 +104,8 @@ def build_sign_chart(profile: Profile) -> Chart:
 
 
 def build_chart(profile: Profile) -> Chart:
+    if profile.chart_source == "signs" and profile.signs:
+        return build_sign_chart(profile)
     if profile.birth is None:
         return build_sign_chart(profile)
     jd = ephemeris.to_jd(profile.birth.utc_dt())
@@ -107,7 +114,7 @@ def build_chart(profile: Profile) -> Chart:
     angles: dict[str, float] = {}
     if profile.birth.time_known:
         houses = ephemeris.compute_houses(
-            jd, profile.birth.lat, profile.birth.lon
+            jd, profile.birth.lat, profile.birth.lon, system=profile.house_system
         )
         if houses is not None:
             angles = {

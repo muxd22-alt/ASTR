@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from datetime import date
 
 from astromind.cli import build_context, collect_signals
@@ -59,6 +60,61 @@ def test_sign_only_chart_uses_whole_sign_houses() -> None:
     assert chart.angles["asc"] == 0.0
     assert chart.houses.cusps[0] == 0.0
     assert chart.positions["sun"].longitude == 105.0
+
+
+def test_manual_signs_with_birth_use_sign_chart() -> None:
+    payload = copy.deepcopy(SIGN_ONLY)
+    payload["profiles"][0].update(
+        {
+            "id": "self",
+            "chart_source": "signs",
+            "house_system": "whole-sign",
+            "birth": {
+                "date": "1988-07-07",
+                "time": "00:00",
+                "tz": "Asia/Riyadh",
+                "lat": 24.7136,
+                "lon": 46.6753,
+                "time_known": True,
+            },
+        }
+    )
+    bundle = Bundle.from_dict(payload)
+    profile = bundle.self_profile
+    chart = build_chart(profile)
+    assert profile.birth is not None
+    assert profile.chart_source == "signs"
+    assert chart.sign_only is True
+    assert chart.birth is not None
+    assert chart.house_system.startswith("whole-sign")
+    assert chart.angles["asc"] == 0.0
+
+
+def test_full_birth_can_request_whole_sign_houses() -> None:
+    payload = {
+        "profiles": [
+            {
+                "id": "self",
+                "role": "self",
+                "name": "x",
+                "house_system": "whole-sign",
+                "birth": {
+                    "date": "1988-07-07",
+                    "time": "00:00",
+                    "tz": "Asia/Riyadh",
+                    "lat": 24.7136,
+                    "lon": 46.6753,
+                    "time_known": True,
+                },
+            }
+        ]
+    }
+    bundle = Bundle.from_dict(payload)
+    chart = build_chart(bundle.self_profile)
+    assert chart.sign_only is False
+    assert chart.house_system == "whole-sign"
+    assert chart.houses is not None
+    assert chart.houses.cusps[0] == 0.0
 
 
 def test_sign_aspect_uses_sign_distance() -> None:

@@ -526,7 +526,11 @@ def cmd_validate(args: argparse.Namespace, context: Context) -> int:
     for profile in context.bundle.profiles:
         chart = context.charts[profile.id]
         if chart.sign_only:
-            status = "أبراج فقط (بدون تاريخ/وقت ميلاد)"
+            status = (
+                "أبراج/بيوت يدوية + تاريخ ميلاد"
+                if profile.birth is not None
+                else "أبراج فقط (بدون تاريخ/وقت ميلاد)"
+            )
         elif profile.birth is not None and not profile.birth.time_known:
             status = "تقريبية (وقت غير معلوم)"
         else:

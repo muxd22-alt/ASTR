@@ -88,6 +88,13 @@ def _confidence_note(data: ReportData) -> str:
     sign_only = [
         profile.name for profile in data.bundle.profiles if profile.birth is None
     ]
+    manual = [
+        profile.name
+        for profile in data.bundle.profiles
+        if profile.birth is not None
+        and profile.id in data.charts
+        and data.charts[profile.id].sign_only
+    ]
     unknown = [
         profile.name
         for profile in data.bundle.profiles
@@ -107,6 +114,16 @@ def _confidence_note(data: ReportData) -> str:
         )
         if unknown:
             note += " ويظل وقت الميلاد غير معروف لـ " + "، ".join(unknown) + "."
+        return note
+    if manual:
+        note = (
+            "ثقة القراءة: متوسطة — مواضع أبراج وبيوت مقدمة يدويًا لـ "
+            + "، ".join(manual)
+            + ". تاريخ الميلاد متوفر، لكن التوقيت اليومي مبني على مستوى الأبراج "
+            "لأن الدرجات الدقيقة غير متاحة."
+        )
+        if unknown:
+            note += " ووقت الميلاد غير مؤكد لـ " + "، ".join(unknown) + "."
         return note
     if unknown:
         return (

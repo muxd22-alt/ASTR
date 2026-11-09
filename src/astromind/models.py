@@ -261,6 +261,8 @@ class Profile:
     signs: dict[str, int] = field(default_factory=dict)
     houses: dict[str, int] = field(default_factory=dict)
     tz_name: str = ""
+    house_system: str = "placidus"
+    chart_source: str = "auto"
 
     @classmethod
     def from_dict(cls, raw: dict[str, Any], index: int = 0) -> "Profile":
@@ -322,6 +324,41 @@ class Profile:
                     f"profile {pid!r}: tz is unknown: {tz_name!r}"
                 ) from exc
 
+        chart_source_raw = (
+            str(raw.get("chart_source") or raw.get("source") or "auto")
+            .strip()
+            .lower()
+        )
+        if chart_source_raw in {
+            "signs",
+            "sign",
+            "placements",
+            "manual",
+            "user",
+            "يدوي",
+            "أبراج",
+        }:
+            chart_source = "signs"
+        else:
+            chart_source = "auto"
+
+        house_system_raw = (
+            str(raw.get("house_system") or raw.get("houses_system") or "placidus")
+            .strip()
+            .lower()
+        )
+        if house_system_raw in {
+            "whole",
+            "whole-sign",
+            "whole_sign",
+            "wholesign",
+            "w",
+            "بيوت كاملة",
+        }:
+            house_system = "whole-sign"
+        else:
+            house_system = "placidus"
+
         return cls(
             id=pid,
             role=role,
@@ -333,6 +370,8 @@ class Profile:
             signs=signs,
             houses=houses,
             tz_name=tz_name,
+            house_system=house_system,
+            chart_source=chart_source,
         )
 
     @property
@@ -366,6 +405,8 @@ class Profile:
             "signs": {body: SIGNS_EN[sign] for body, sign in self.signs.items()},
             "houses": dict(self.houses),
             "tz": self.tz,
+            "house_system": self.house_system,
+            "chart_source": self.chart_source,
         }
         if self.birth is not None:
             payload["birth"] = {

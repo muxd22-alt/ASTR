@@ -142,8 +142,12 @@ def _sign_for(chart: Chart, body: str) -> int | None:
     return sign_of(position.longitude) if position is not None else None
 
 
-def _house_for(chart: Chart, body: str) -> int | None:
-    if body in {"asc", "mc"} or chart.houses is None:
+def _house_for(chart: Chart, body: str, explicit: dict[str, int]) -> int | None:
+    if body in {"asc", "mc"}:
+        return None
+    if body in explicit:
+        return explicit[body]
+    if chart.houses is None:
         return None
     position = chart.positions.get(body)
     if position is None:
@@ -151,7 +155,7 @@ def _house_for(chart: Chart, body: str) -> int | None:
     return house_of(position.longitude, chart.houses.cusps)
 
 
-def placement_cards(chart: Chart) -> str:
+def placement_cards(chart: Chart, profile) -> str:
     order = [
         "sun",
         "moon",
@@ -173,7 +177,7 @@ def placement_cards(chart: Chart) -> str:
         if sign is None:
             continue
         sign_name = SIGNS_AR[sign]
-        house = _house_for(chart, body)
+        house = _house_for(chart, body, profile.houses)
         element = element_ar(sign_element(sign))
         house_label = f"البيت {house}" if house else "بدون بيت"
         cards.append(
@@ -245,10 +249,16 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
     profile = bundle.self_profile
     chart = context.charts[profile.id]
     if chart.sign_only:
-        confidence = (
-            "ثقة منخفضة — بيانات أبراج وبيوت فقط، بدون تاريخ أو وقت ميلاد. "
-            "التوقيت اليومي تقريبي، والبيوت محسوبة بنظام البيوت الكاملة انطلاقًا من الطالع."
-        )
+        if profile.birth is None:
+            confidence = (
+                "ثقة منخفضة — بيانات أبراج وبيوت فقط، بدون تاريخ أو وقت ميلاد. "
+                "التوقيت اليومي تقريبي، والبيوت محسوبة بنظام البيوت الكاملة انطلاقًا من الطالع."
+            )
+        else:
+            confidence = (
+                "ثقة متوسطة — مواضع أبراج وبيوت مقدمة يدويًا مع تاريخ ميلاد. "
+                "التوقيت اليومي مبني على مستوى الأبراج لأن الدرجات الدقيقة غير متاحة."
+            )
     elif profile.birth is not None and not profile.birth.time_known:
         confidence = (
             "ثقة متوسطة — تاريخ الميلاد متوفر لكن وقت الميلاد غير مؤكد؛ "
@@ -416,10 +426,10 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
   <section>
     <div class="section-head">
       <h2>المواضع الكاملة</h2>
-      <p>الأبراج + البيوت {html.escape(chart.house_system)}</p>
+      <p>الأبراج + البيوت {html.escape("بنظام البيوت الكاملة" if chart.sign_only else f"بنظام {chart.house_system}")}</p>
     </div>
     <div class="placements">
-      {placement_cards(chart)}
+      {placement_cards(chart, profile)}
     </div>
   </section>
 

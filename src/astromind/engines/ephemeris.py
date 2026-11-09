@@ -221,9 +221,16 @@ def all_positions(jd: float, include_chiron: bool = False) -> dict[str, BodyPosi
     return positions
 
 
-def compute_houses(jd: float, lat: float, lon: float) -> Houses | None:
-    """Placidus first, whole-sign fallback for extreme latitudes."""
-    for system, code in (("Placidus", b"P"), ("WholeSign", b"W")):
+def compute_houses(
+    jd: float, lat: float, lon: float, system: str = "placidus"
+) -> Houses | None:
+    """Compute houses. Falls back between Placidus and whole-sign."""
+    wanted = (system or "placidus").strip().lower()
+    if wanted in {"whole", "whole-sign", "whole_sign", "wholesign", "w"}:
+        order = (("whole-sign", b"W"), ("Placidus", b"P"))
+    else:
+        order = (("Placidus", b"P"), ("whole-sign", b"W"))
+    for name, code in order:
         try:
             cusps, ascmc = swe.houses(jd, lat, lon, code)
         except Exception:
@@ -233,7 +240,7 @@ def compute_houses(jd: float, lat: float, lon: float) -> Houses | None:
                 cusps=tuple(cusps[:12]),
                 asc=ascmc[0] % 360.0,
                 mc=ascmc[1] % 360.0,
-                system=system,
+                system=name,
             )
     return None
 
