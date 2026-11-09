@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import re
 from datetime import date
 from pathlib import Path
 
-from astromind.cli import build_context, collect_signals
+from astromind.cli import build_context, collect_signals, month_bounds, week_start
 from astromind.generators.md_builder import (
     ReportData,
     build_child_manual,
@@ -48,6 +49,56 @@ def test_weekly_report() -> None:
     text = build_weekly(_data(date(2026, 11, 9)))
     assert "موجز الأسبوع" in text
     assert "تقويم الأسبوع" in text
+
+
+def test_monthly_and_weekly_alerts_are_future_only() -> None:
+    day = date(2026, 11, 9)
+    bundle = load_bundle(EXAMPLES)
+    context = build_context(bundle)
+
+    start, end = month_bounds(day)
+    monthly_signals = collect_signals(context, start, end, daily=False)
+    monthly = build_monthly(
+        ReportData(
+            bundle=context.bundle,
+            charts=context.charts,
+            composite=context.composite,
+            signals=monthly_signals,
+            start=start,
+            end=end,
+            as_of=day,
+            synastry=context.synastry,
+            child_guidance={},
+        )
+    )
+    caution_section = monthly.split("## تواريخ تحتاج هدوءًا", 1)[1].split("##", 1)[0]
+    caution_days = [
+        int(match.group(1))
+        for match in re.finditer(r"احذر (\d+) نوفمبر", caution_section)
+    ]
+    assert all(number >= day.day for number in caution_days)
+
+    week_start_day = week_start(day)
+    week_end_day = date.fromordinal(week_start_day.toordinal() + 6)
+    weekly_signals = collect_signals(
+        context, week_start_day, week_end_day, daily=False
+    )
+    weekly = build_weekly(
+        ReportData(
+            bundle=context.bundle,
+            charts=context.charts,
+            composite=context.composite,
+            signals=weekly_signals,
+            start=week_start_day,
+            end=week_end_day,
+            as_of=day,
+            synastry=context.synastry,
+            child_guidance={},
+        )
+    )
+    calendar_section = weekly.split("## تقويم الأسبوع", 1)[1].split("##", 1)[0]
+    assert "8 نوفمبر" not in calendar_section
+    assert "9 نوفمبر" in calendar_section
 
 
 def test_monthly_report_and_manuals() -> None:

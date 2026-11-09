@@ -298,6 +298,7 @@ def _data(
     start: date,
     end: date,
     include_month_context: bool = False,
+    as_of: date | None = None,
 ) -> ReportData:
     return ReportData(
         bundle=context.bundle,
@@ -306,6 +307,7 @@ def _data(
         signals=signals,
         start=start,
         end=end,
+        as_of=as_of or start,
         moon_changes=_moon_changes(context, start, end),
         synastry=context.synastry,
         child_guidance=_child_guidance(context, end),
@@ -379,7 +381,7 @@ def cmd_daily(args: argparse.Namespace, context: Context) -> int:
     seen = state.get("seen", {})
     filtered = _apply_daily_filter(context, signals, day, seen)
 
-    data = _data(context, filtered, day, day)
+    data = _data(context, filtered, day, day, as_of=day)
     root = outputs_root(args)
     text = build_daily(data)
     write_report(root, "today.md", text)
@@ -398,7 +400,7 @@ def cmd_weekly(args: argparse.Namespace, context: Context) -> int:
     start = week_start(anchor)
     end = start + timedelta(days=6)
     signals = collect_signals(context, start, end, daily=False)
-    data = _data(context, signals, start, end)
+    data = _data(context, signals, start, end, as_of=anchor)
     root = outputs_root(args)
     text = build_weekly(data)
 
@@ -422,7 +424,8 @@ def cmd_weekly(args: argparse.Namespace, context: Context) -> int:
 
 
 def cmd_monthly(args: argparse.Namespace, context: Context) -> int:
-    anchor = parse_day(args.date, context.tz)
+    today_anchor = parse_day(args.date, context.tz)
+    anchor = today_anchor
     if args.month:
         try:
             year, month = (int(part) for part in args.month.split("-", 1))
@@ -430,8 +433,9 @@ def cmd_monthly(args: argparse.Namespace, context: Context) -> int:
         except (ValueError, TypeError) as exc:
             raise ProfileError("--month must be YYYY-MM") from exc
     start, end = month_bounds(anchor)
+    as_of = max(today_anchor, start)
     signals = collect_signals(context, start, end, daily=False)
-    data = _data(context, signals, start, end)
+    data = _data(context, signals, start, end, as_of=as_of)
     root = outputs_root(args)
     text = build_monthly(data)
 
@@ -454,7 +458,8 @@ def cmd_monthly(args: argparse.Namespace, context: Context) -> int:
 
 
 def cmd_manuals(args: argparse.Namespace, context: Context) -> int:
-    anchor = parse_day(args.date, context.tz)
+    today_anchor = parse_day(args.date, context.tz)
+    anchor = today_anchor
     if args.month:
         try:
             year, month = (int(part) for part in args.month.split("-", 1))
@@ -462,8 +467,9 @@ def cmd_manuals(args: argparse.Namespace, context: Context) -> int:
         except (ValueError, TypeError) as exc:
             raise ProfileError("--month must be YYYY-MM") from exc
     start, end = month_bounds(anchor)
+    as_of = max(today_anchor, start)
     signals = collect_signals(context, start, end, daily=False)
-    data = _data(context, signals, start, end)
+    data = _data(context, signals, start, end, as_of=as_of)
     root = outputs_root(args)
 
     wrote = 0
@@ -490,7 +496,8 @@ def cmd_manuals(args: argparse.Namespace, context: Context) -> int:
 
 
 def cmd_calendar(args: argparse.Namespace, context: Context) -> int:
-    day = parse_day(args.date, context.tz)
+    today_anchor = parse_day(args.date, context.tz)
+    day = today_anchor
     if args.month:
         try:
             year, month = (int(part) for part in args.month.split("-", 1))
@@ -498,8 +505,9 @@ def cmd_calendar(args: argparse.Namespace, context: Context) -> int:
         except (ValueError, TypeError) as exc:
             raise ProfileError("--month must be YYYY-MM") from exc
     start, end = month_bounds(day)
+    as_of = max(today_anchor, start)
     signals = collect_signals(context, start, end, daily=False)
-    data = _data(context, signals, start, end)
+    data = _data(context, signals, start, end, as_of=as_of)
     root = outputs_root(args)
     text = build_calendar(data, start, end)
     path = write_report(root, "calendar.ics", text)

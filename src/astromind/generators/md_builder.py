@@ -43,6 +43,7 @@ class ReportData:
     signals: dict[str, list[Signal]]
     start: date
     end: date
+    as_of: date | None = None
     moon_changes: list[tuple[float, int, int]] = field(default_factory=list)
     synastry: list[SynastryAspect] = field(default_factory=list)
     child_guidance: dict[str, ChildGuidance] = field(default_factory=dict)
@@ -146,6 +147,7 @@ def _windows(
     limit: int = 5,
 ) -> list[str]:
     wanted = POSITIVE if positive else {"friction"}
+    floor = data.as_of or data.start
     candidates = data.signals.get("relationship", [])
     if not candidates:
         candidates = data.signals.get("self", [])
@@ -154,6 +156,7 @@ def _windows(
         for signal in candidates
         if signal.polarity in wanted
         and data.start <= signal.date <= data.end
+        and signal.date >= floor
         and signal.transiting in {"moon", "venus", "mercury", "sun", "jupiter", "mars", "saturn"}
         and (not signal.hit.sign_level or signal.transiting == "moon")
     ]
@@ -327,7 +330,7 @@ def build_weekly(data: ReportData) -> str:
     lines.append("## تقويم الأسبوع")
     lines.append("| اليوم | أهم إشارة شخصية | إشارة علاقة |")
     lines.append("|---|---|---|")
-    day = start
+    day = max(start, data.as_of or start)
     while day <= end:
         self_today = [
             signal for signal in data.signals.get("self", []) if signal.date == day
@@ -352,6 +355,10 @@ def build_weekly(data: ReportData) -> str:
     if cautions:
         lines.append("## احذر")
         lines.extend(cautions)
+        lines.append("")
+    if not windows and not cautions:
+        lines.append("## تنبيهات")
+        lines.append("- لا نوافذ أو تحذيرات متبقية في هذه الفترة.")
         lines.append("")
 
     lines.append("## قرار واحد هذا الأسبوع")
@@ -449,9 +456,17 @@ def build_monthly(data: ReportData) -> str:
         lines.append("## نوافذ الشهر")
         lines.extend(windows)
         lines.append("")
+    else:
+        lines.append("## نوافذ الشهر")
+        lines.append("- لا نوافذ إيجابية متبقية في هذه الفترة.")
+        lines.append("")
     if cautions:
         lines.append("## تواريخ تحتاج هدوءًا")
         lines.extend(cautions)
+        lines.append("")
+    else:
+        lines.append("## تواريخ تحتاج هدوءًا")
+        lines.append("- لا تواريخ حرجة متبقية في هذه الفترة.")
         lines.append("")
 
     lines.append("## توصية الشهر")

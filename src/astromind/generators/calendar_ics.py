@@ -58,8 +58,11 @@ def _events_for(
 ) -> list[str]:
     output: list[str] = []
     seen: set[str] = set()
+    floor = data.as_of or month_start
     for signal in signals:
         if signal.date < month_start or signal.date > month_end:
+            continue
+        if signal.date < floor:
             continue
         if signal.key in seen:
             continue

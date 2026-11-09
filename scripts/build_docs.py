@@ -235,16 +235,20 @@ def birth_line(profile, city: str) -> str:
 
 def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
     daily_signals = collect_signals(context, day, day, daily=True)
-    daily = build_daily(_data(context, daily_signals, day, day))
+    daily = build_daily(_data(context, daily_signals, day, day, as_of=day))
 
     week_start_day = week_start(day)
     week_end_day = date.fromordinal(week_start_day.toordinal() + 6)
     weekly_signals = collect_signals(context, week_start_day, week_end_day, daily=False)
-    weekly = build_weekly(_data(context, weekly_signals, week_start_day, week_end_day))
+    weekly = build_weekly(
+        _data(context, weekly_signals, week_start_day, week_end_day, as_of=day)
+    )
 
     month_start, month_end = month_bounds(day)
     monthly_signals = collect_signals(context, month_start, month_end, daily=False)
-    monthly = build_monthly(_data(context, monthly_signals, month_start, month_end))
+    monthly = build_monthly(
+        _data(context, monthly_signals, month_start, month_end, as_of=day)
+    )
 
     profile = bundle.self_profile
     chart = context.charts[profile.id]
@@ -275,10 +279,77 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Astromind — عرض حي لـ {html.escape(profile.name)}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
+  @font-face {{
+    font-family: "Thmanyah Sans";
+    src: url("font/thmanyah-sans-Light.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }}
+  @font-face {{
+    font-family: "Thmanyah Sans";
+    src: url("font/thmanyah-sans-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }}
+  @font-face {{
+    font-family: "Thmanyah Sans";
+    src: url("font/thmanyah-sans-Medium.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }}
+  @font-face {{
+    font-family: "Thmanyah Sans";
+    src: url("font/thmanyah-sans-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }}
+  @font-face {{
+    font-family: "Thmanyah Sans";
+    src: url("font/thmanyah-sans-Black.woff2") format("woff2");
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }}
+  @font-face {{
+    font-family: "Thmanyah Serif Display";
+    src: url("font/thmanyah-serif-display-Light.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }}
+  @font-face {{
+    font-family: "Thmanyah Serif Display";
+    src: url("font/thmanyah-serif-display-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }}
+  @font-face {{
+    font-family: "Thmanyah Serif Display";
+    src: url("font/thmanyah-serif-display-Medium.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }}
+  @font-face {{
+    font-family: "Thmanyah Serif Display";
+    src: url("font/thmanyah-serif-display-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }}
+  @font-face {{
+    font-family: "Thmanyah Serif Display";
+    src: url("font/thmanyah-serif-display-Black.woff2") format("woff2");
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }}
   :root {{
     --bg: #070b18;
     --bg-2: #0d1428;
@@ -299,7 +370,7 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
     margin: 0;
     min-height: 100vh;
     color: var(--text);
-    font-family: "Tajawal", "Segoe UI", Tahoma, sans-serif;
+    font-family: "Thmanyah Sans", "Segoe UI", Tahoma, sans-serif;
     background:
       radial-gradient(circle at 15% 10%, rgba(143, 184, 255, 0.16), transparent 32rem),
       radial-gradient(circle at 85% 0%, rgba(232, 192, 125, 0.14), transparent 28rem),
@@ -330,7 +401,7 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
     background: rgba(232, 192, 125, 0.06); font-size: 0.85rem; letter-spacing: 0.02em;
   }}
   .dot {{ width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 12px var(--gold); }}
-  h1 {{ font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1.1; margin: 1rem 0 0.4rem; letter-spacing: -0.02em; }}
+  h1 {{ font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1.1; margin: 1rem 0 0.4rem; letter-spacing: -0.02em; font-family: "Thmanyah Serif Display", serif; font-weight: 900; }}
   h1 span {{ background: linear-gradient(120deg, #fff 10%, var(--gold-soft) 55%, var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }}
   .subtitle {{ color: var(--muted); font-size: clamp(1rem, 2vw, 1.2rem); margin: 0; }}
   .big-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2.2rem 0 1rem; }}
@@ -344,7 +415,7 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
     background: radial-gradient(circle, rgba(232, 192, 125, 0.12), transparent 70%);
   }}
   .big-label {{ color: var(--muted); font-size: 0.9rem; }}
-  .big-sign {{ font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 800; color: var(--gold-soft); margin: 0.2rem 0; }}
+  .big-sign {{ font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 700; color: var(--gold-soft); margin: 0.2rem 0; font-family: "Thmanyah Serif Display", serif; }}
   .big-caption {{ color: var(--muted); font-size: 0.82rem; }}
   .note {{
     margin: 1.2rem 0 2.4rem; padding: 1rem 1.2rem; border-radius: 16px;
@@ -355,7 +426,7 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
   .birth {{ display: block; margin-top: 0.35rem; color: var(--muted); font-size: 0.84rem; }}
   section {{ margin-top: 2.6rem; }}
   .section-head {{ display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }}
-  h2 {{ font-size: clamp(1.4rem, 3vw, 1.9rem); margin: 0; }}
+  h2 {{ font-size: clamp(1.4rem, 3vw, 1.9rem); margin: 0; font-family: "Thmanyah Serif Display", serif; font-weight: 700; }}
   .section-head p {{ margin: 0; color: var(--muted); font-size: 0.9rem; }}
   .placements {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; }}
   .placement {{
@@ -363,7 +434,7 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
     background: var(--card);
   }}
   .placement-body {{ color: var(--muted); font-size: 0.82rem; }}
-  .placement-sign {{ color: var(--gold-soft); font-size: 1.35rem; font-weight: 700; margin: 0.1rem 0 0.25rem; }}
+  .placement-sign {{ color: var(--gold-soft); font-size: 1.35rem; font-weight: 700; margin: 0.1rem 0 0.25rem; font-family: "Thmanyah Serif Display", serif; }}
   .placement-meta {{ display: flex; justify-content: space-between; gap: 0.5rem; color: var(--muted); font-size: 0.76rem; }}
   .tabs {{ display: flex; flex-wrap: wrap; gap: 0.55rem; margin: 1.2rem 0 1rem; }}
   .tab {{
@@ -380,8 +451,8 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
     background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
     padding: clamp(1.1rem, 3vw, 2rem); backdrop-filter: blur(10px);
   }}
-  .report h1 {{ font-size: 1.6rem; margin: 0 0 1rem; color: var(--gold-soft); }}
-  .report h2 {{ font-size: 1.22rem; margin: 1.6rem 0 0.65rem; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(255,255,255,0.08); }}
+  .report h1 {{ font-size: 1.6rem; margin: 0 0 1rem; color: var(--gold-soft); font-family: "Thmanyah Serif Display", serif; }}
+  .report h2 {{ font-size: 1.22rem; margin: 1.6rem 0 0.65rem; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-family: "Thmanyah Serif Display", serif; }}
   .report h3 {{ font-size: 1.05rem; margin: 1.2rem 0 0.4rem; }}
   .report p {{ margin: 0.65rem 0; }}
   .report strong {{ color: #fff; font-weight: 700; }}
