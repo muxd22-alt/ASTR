@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "profiles": [
+    {
+      "id": "self",
+      "role": "self",
+      "name": "أنا",
+      "birth": {
+        "date": "1990-05-14",
+        "time": "07:30",
+        "tz": "Asia/Riyadh",
+        "lat": 24.7136,
+        "lon": 46.6753,
+        "time_known": true
+      },
+      "focus": ["communication", "emotional_security", "planning"],
+      "gender": "male"
+    },
+    {
+      "id": "partner",
+      "role": "partner",
+      "name": "الشريكة",
+      "birth": {
+        "date": "1992-09-03",
+        "time": "21:15",
+        "tz": "Asia/Riyadh",
+        "lat": 21.4858,
+        "lon": 39.1925,
+        "time_known": true
+      },
+      "focus": ["communication", "emotional_security", "conflict"],
+      "gender": "female"
+    },
+    {
+      "id": "child_1",
+      "role": "child",
+      "name": "الطفل الأول",
+      "birth": {
+        "date": "2018-02-11",
+        "time": "04:40",
+        "tz": "Asia/Riyadh",
+        "lat": 24.7136,
+        "lon": 46.6753,
+        "time_known": true
+      },
+      "focus": ["parenting", "talent", "emotional_security"],
+      "gender": "male"
+    },
+    {
+      "id": "child_2",
+      "role": "child",
+      "name": "الطفل الثاني",
+      "birth": {
+        "date": "2021-11-27",
+        "time": "16:05",
+        "tz": "Asia/Riyadh",
+        "lat": 24.7136,
+        "lon": 46.6753,
+        "time_known": true
+      },
+      "focus": ["parenting", "talent", "emotional_security"],
+      "gender": "male"
+    }
+  ]
+}

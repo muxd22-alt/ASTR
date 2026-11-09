@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Astromind — عرض حي لـ مثال</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070b18;
+    --bg-2: #0d1428;
+    --card: rgba(255, 255, 255, 0.045);
+    --card-strong: rgba(255, 255, 255, 0.075);
+    --line: rgba(232, 192, 125, 0.18);
+    --gold: #e8c07d;
+    --gold-soft: #f4ddb0;
+    --text: #eef1f8;
+    --muted: #9aa6bf;
+    --accent: #8fb8ff;
+    --danger: #ffb9a8;
+    --radius: 20px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: "Tajawal", "Segoe UI", Tahoma, sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(143, 184, 255, 0.16), transparent 32rem),
+      radial-gradient(circle at 85% 0%, rgba(232, 192, 125, 0.14), transparent 28rem),
+      radial-gradient(circle at 50% 100%, rgba(120, 90, 200, 0.12), transparent 36rem),
+      linear-gradient(180deg, var(--bg), var(--bg-2) 55%, #060912);
+    line-height: 1.85;
+  }
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.55;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, #fff, transparent),
+      radial-gradient(1px 1px at 28% 42%, rgba(255,255,255,0.8), transparent),
+      radial-gradient(1.5px 1.5px at 64% 12%, #ffe9bd, transparent),
+      radial-gradient(1px 1px at 76% 58%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1px 1px at 88% 32%, #cfe0ff, transparent),
+      radial-gradient(1px 1px at 44% 82%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1.5px 1.5px at 8% 72%, #ffe9bd, transparent);
+  }
+  .wrap { position: relative; width: min(1120px, calc(100% - 2rem)); margin: 0 auto; padding: 3.2rem 0 4rem; }
+  header.hero { text-align: center; padding: 1rem 0 2.4rem; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 0.35rem 0.95rem; color: var(--gold-soft);
+    background: rgba(232, 192, 125, 0.06); font-size: 0.85rem; letter-spacing: 0.02em;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 12px var(--gold); }
+  h1 { font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1.1; margin: 1rem 0 0.4rem; letter-spacing: -0.02em; }
+  h1 span { background: linear-gradient(120deg, #fff 10%, var(--gold-soft) 55%, var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .subtitle { color: var(--muted); font-size: clamp(1rem, 2vw, 1.2rem); margin: 0; }
+  .big-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2.2rem 0 1rem; }
+  .big-card {
+    position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 1.4rem 1rem; background: linear-gradient(160deg, var(--card-strong), var(--card));
+    text-align: center; backdrop-filter: blur(8px);
+  }
+  .big-card::after {
+    content: ""; position: absolute; inset: auto -20% -60% -20%; height: 80%;
+    background: radial-gradient(circle, rgba(232, 192, 125, 0.12), transparent 70%);
+  }
+  .big-label { color: var(--muted); font-size: 0.9rem; }
+  .big-sign { font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 800; color: var(--gold-soft); margin: 0.2rem 0; }
+  .big-caption { color: var(--muted); font-size: 0.82rem; }
+  .note {
+    margin: 1.2rem 0 2.4rem; padding: 1rem 1.2rem; border-radius: 16px;
+    border: 1px solid rgba(255, 185, 168, 0.28); background: rgba(255, 185, 168, 0.06);
+    color: #ffd8cd; font-size: 0.95rem;
+  }
+  .note strong { color: #fff0eb; }
+  .birth { display: block; margin-top: 0.35rem; color: var(--muted); font-size: 0.84rem; }
+  section { margin-top: 2.6rem; }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+  h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); margin: 0; }
+  .section-head p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+  .placements { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; }
+  .placement {
+    border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 16px; padding: 0.9rem 1rem;
+    background: var(--card);
+  }
+  .placement-body { color: var(--muted); font-size: 0.82rem; }
+  .placement-sign { color: var(--gold-soft); font-size: 1.35rem; font-weight: 700; margin: 0.1rem 0 0.25rem; }
+  .placement-meta { display: flex; justify-content: space-between; gap: 0.5rem; color: var(--muted); font-size: 0.76rem; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 0.55rem; margin: 1.2rem 0 1rem; }
+  .tab {
+    appearance: none; border: 1px solid var(--line); border-radius: 999px; cursor: pointer;
+    background: transparent; color: var(--muted); font-family: inherit; font-size: 0.95rem;
+    padding: 0.5rem 1.15rem; transition: 0.2s ease;
+  }
+  .tab:hover { color: var(--text); border-color: rgba(232, 192, 125, 0.4); }
+  .tab.active { background: linear-gradient(120deg, rgba(232, 192, 125, 0.22), rgba(143, 184, 255, 0.16)); color: #fff; border-color: rgba(232, 192, 125, 0.55); }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .report {
+    border: 1px solid rgba(255, 255, 255, 0.09); border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
+    padding: clamp(1.1rem, 3vw, 2rem); backdrop-filter: blur(10px);
+  }
+  .report h1 { font-size: 1.6rem; margin: 0 0 1rem; color: var(--gold-soft); }
+  .report h2 { font-size: 1.22rem; margin: 1.6rem 0 0.65rem; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .report h3 { font-size: 1.05rem; margin: 1.2rem 0 0.4rem; }
+  .report p { margin: 0.65rem 0; }
+  .report strong { color: #fff; font-weight: 700; }
+  .report ul { margin: 0.4rem 0 0.9rem; padding-inline-start: 1.2rem; }
+  .report li { margin: 0.35rem 0; }
+  .report ul.sublist { margin: 0.15rem 0 0.35rem; color: var(--muted); font-size: 0.92rem; }
+  .report blockquote {
+    margin: 1.2rem 0 0; padding: 0.8rem 1rem; border-radius: 12px;
+    border-inline-start: 3px solid var(--gold); background: rgba(232, 192, 125, 0.06);
+    color: var(--muted);
+  }
+  .table-wrap { overflow-x: auto; margin: 0.8rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { padding: 0.55rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: right; }
+  th { color: var(--gold-soft); font-weight: 700; background: rgba(232, 192, 125, 0.05); }
+  footer { margin-top: 3rem; padding-top: 1.4rem; border-top: 1px solid rgba(255,255,255,0.08); color: var(--muted); font-size: 0.86rem; display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; justify-content: space-between; }
+  footer a { color: var(--gold-soft); text-decoration: none; }
+  @media (max-width: 620px) {
+    .big-grid { grid-template-columns: 1fr; }
+    .section-head { flex-direction: column; gap: 0.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="wrap">
+  <header class="hero">
+    <div class="badge"><span class="dot"></span> عرض حي · تقرير مولّد آليًا</div>
+    <h1><span>مثال</span></h1>
+    <p class="subtitle">الشمس السرطان · القمر الحمل · الطالع الميزان</p>
+  </header>
+
+  <div class="big-grid">
+    
+            <div class="big-card">
+              <div class="big-label">الشمس</div>
+              <div class="big-sign">السرطان</div>
+              <div class="big-caption">جوهر الهوية</div>
+            </div>
+            
+
+            <div class="big-card">
+              <div class="big-label">القمر</div>
+              <div class="big-sign">الحمل</div>
+              <div class="big-caption">الأمان العاطفي</div>
+            </div>
+            
+
+            <div class="big-card">
+              <div class="big-label">الطالع</div>
+              <div class="big-sign">الميزان</div>
+              <div class="big-caption">طريقة الظهور</div>
+            </div>
+            
+  </div>
+
+  <div class="note">
+    <strong>حدود القراءة:</strong> ثقة عالية — تاريخ ووقت الميلاد متوفران والخريطة مكتملة.
+    <span class="birth">بيانات الميلاد: 7 يوليو 1988 — 12:00 · الرياض</span>
+  </div>
+
+  <section>
+    <div class="section-head">
+      <h2>المواضع الكاملة</h2>
+      <p>الأبراج + البيوت Placidus</p>
+    </div>
+    <div class="placements">
+      
+            <div class="placement">
+              <div class="placement-body">الشمس</div>
+              <div class="placement-sign">السرطان</div>
+              <div class="placement-meta"><span>مائي</span><span>البيت 9</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">القمر</div>
+              <div class="placement-sign">الحمل</div>
+              <div class="placement-meta"><span>ناري</span><span>البيت 7</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">عطارد</div>
+              <div class="placement-sign">الجوزاء</div>
+              <div class="placement-meta"><span>هوائي</span><span>البيت 9</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">الزهرة</div>
+              <div class="placement-sign">الجوزاء</div>
+              <div class="placement-meta"><span>هوائي</span><span>البيت 8</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">المريخ</div>
+              <div class="placement-sign">الحوت</div>
+              <div class="placement-meta"><span>مائي</span><span>البيت 6</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">المشتري</div>
+              <div class="placement-sign">الثور</div>
+              <div class="placement-meta"><span>ترابي</span><span>البيت 8</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">زحل</div>
+              <div class="placement-sign">القوس</div>
+              <div class="placement-meta"><span>ناري</span><span>البيت 3</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">أورانوس</div>
+              <div class="placement-sign">القوس</div>
+              <div class="placement-meta"><span>ناري</span><span>البيت 3</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">نبتون</div>
+              <div class="placement-sign">الجدي</div>
+              <div class="placement-meta"><span>ترابي</span><span>البيت 3</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">بلوتو</div>
+              <div class="placement-sign">العقرب</div>
+              <div class="placement-meta"><span>مائي</span><span>البيت 1</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">العقدة الشمالية</div>
+              <div class="placement-sign">الحوت</div>
+              <div class="placement-meta"><span>مائي</span><span>البيت 5</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">الطالع</div>
+              <div class="placement-sign">الميزان</div>
+              <div class="placement-meta"><span>هوائي</span><span>بدون بيت</span></div>
+            </div>
+            
+
+            <div class="placement">
+              <div class="placement-body">وسط السماء</div>
+              <div class="placement-sign">السرطان</div>
+              <div class="placement-meta"><span>مائي</span><span>بدون بيت</span></div>
+            </div>
+            
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>التقارير في العمل</h2>
+      <p>نفس المخرجات التي تُرفع كـ Artifacts في GitHub Actions</p>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-panel="daily" role="tab">اليوم</button>
+      <button class="tab" data-panel="weekly" role="tab">الأسبوع</button>
+      <button class="tab" data-panel="monthly" role="tab">الشهر</button>
+    </div>
+    <div class="panel active" id="daily"><div class="report"><h1>بطاقة اليوم — الاثنين 9 نوفمبر 2026</h1>
+<p><strong>الجو العام:</strong> القمر يسهّل هويتك عبر تثليث (تدفق وسهولة).</p>
+<p><strong>افعل:</strong> استثمر النافذة في خطوة واحدة كانت مؤجلة. <strong>تجنّب:</strong> لا تفترض أن السهولة ستدوم؛ أنجز الآن.</p>
+<p><strong>نافذة اليوم:</strong> نافذة 9 نوفمبر 07:15 — القمر يسهّل هويتك عبر تثليث (تدفق وسهولة). <strong>احذر:</strong> احذر 9 نوفمبر 00:23 — القمر يضغط على طاقتك وحدودك عبر زاوية 135° (ضغط يحتاج تفريغًا).</p>
+<blockquote>ثقة القراءة: عالية — بيانات الميلاد والوقت مكتملة.</blockquote></div></div>
+    <div class="panel" id="weekly"><div class="report"><h1>موجز الأسبوع — 8 نوفمبر إلى 14 نوفمبر 2026</h1>
+<p><strong>القمر هذا الأسبوع:</strong> تغيّرات القمر: 8 نوفمبر 01:39 → العقرب، 10 نوفمبر 11:35 → القوس، 12 نوفمبر 23:27 → الجدي</p>
+<h2>طقسك الشخصي</h2>
+<ul>
+<li><strong>القمر — تواصلك</strong> — القمر يضغط على تواصلك عبر تقابل (توتر بين طرفين).
+<ul class="sublist">
+<li>افعل: اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.</li>
+<li>تجنّب: لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</li>
+</ul>
+</li>
+<li><strong>الشمس — هويتك</strong> — الشمس تسهّل هويتك عبر تثليث (تدفق وسهولة).
+<ul class="sublist">
+<li>افعل: استثمر النافذة في خطوة واحدة كانت مؤجلة.</li>
+<li>تجنّب: لا تفترض أن السهولة ستدوم؛ أنجز الآن.</li>
+</ul>
+</li>
+<li><strong>زحل — حساسيتك</strong> — زحل يضغط على حساسيتك عبر تربيع (احتكاك يدفع للتعديل).
+<ul class="sublist">
+<li>افعل: اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.</li>
+<li>تجنّب: لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</li>
+</ul>
+</li>
+</ul>
+<h2>تقويم الأسبوع</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>اليوم</th>
+<th>أهم إشارة شخصية</th>
+<th>إشارة علاقة</th>
+</tr></thead><tbody>
+<tr>
+<td>8 نوفمبر</td>
+<td>الشمس — محور مسارك</td>
+<td>—</td>
+</tr>
+<tr>
+<td>9 نوفمبر</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>10 نوفمبر</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>11 نوفمبر</td>
+<td>القمر — قربك وتقديرك</td>
+<td>—</td>
+</tr>
+<tr>
+<td>12 نوفمبر</td>
+<td>القمر — تواصلك</td>
+<td>—</td>
+</tr>
+<tr>
+<td>13 نوفمبر</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>14 نوفمبر</td>
+<td>القمر — محور شريكك</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+<h2>نوافذ التواصل</h2>
+<ul>
+<li>نافذة 8 نوفمبر 09:48 — الشمس تسهّل محور مسارك عبر تثليث (تدفق وسهولة).
+</li>
+<li>نافذة 12 نوفمبر 21:25 — المريخ يلامس عطاردك: حدة في الكلام وسرعة في الرد.
+</li>
+</ul>
+<h2>احذر</h2>
+<ul>
+<li>احذر 8 نوفمبر 03:34 — الشمس تضغط على محور شريكك عبر زاوية 150° (عدم توافق يحتاج تعديلًا).
+</li>
+<li>احذر 11 نوفمبر 15:27 — القمر يلامس زهرتك: حنان سهل وتقدير صغير يكفي.
+</li>
+<li>احذر 12 نوفمبر 11:57 — القمر يضغط على تواصلك عبر تقابل (توتر بين طرفين).
+</li>
+<li>احذر 12 نوفمبر 23:57 — زحل يضغط على حساسيتك عبر تربيع (احتكاك يدفع للتعديل).
+</li>
+</ul>
+<h2>قرار واحد هذا الأسبوع</h2>
+<ul>
+<li>اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.
+</li>
+</ul>
+<blockquote>ثقة القراءة: عالية — بيانات الميلاد والوقت مكتملة.</blockquote></div></div>
+    <div class="panel" id="monthly"><div class="report"><h1>الدليل الشهري — 1 نوفمبر إلى 30 نوفمبر 2026</h1>
+<p><strong>القمر خلال الشهر:</strong> تغيّرات القمر:</p>
+<ul>
+<li>1 نوفمبر 07:18 → الأسد
+</li>
+<li>3 نوفمبر 11:27 → العذراء
+</li>
+<li>5 نوفمبر 17:38 → الميزان
+</li>
+<li>8 نوفمبر 01:39 → العقرب
+</li>
+<li>10 نوفمبر 11:35 → القوس
+</li>
+<li>12 نوفمبر 23:27 → الجدي
+</li>
+<li>15 نوفمبر 12:24 → الدلو
+</li>
+<li>18 نوفمبر 00:19 → الحوت
+</li>
+<li>20 نوفمبر 08:52 → الحمل
+</li>
+<li>22 نوفمبر 13:09 → الثور
+</li>
+<li>24 نوفمبر 14:09 → الجوزاء
+</li>
+<li>26 نوفمبر 13:51 → السرطان
+</li>
+<li>28 نوفمبر 14:20 → الأسد
+</li>
+<li>30 نوفمبر 17:12 → العذراء
+</li>
+</ul>
+<h2>الخط العام للشهر</h2>
+<ul>
+<li><strong>القمر — محور ظهورك</strong> — القمر يضغط على محور ظهورك عبر تقابل (توتر بين طرفين).
+<ul class="sublist">
+<li>افعل: اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.</li>
+<li>تجنّب: لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</li>
+</ul>
+</li>
+<li><strong>القمر — هويتك</strong> — القمر يضغط على هويتك عبر تربيع (احتكاك يدفع للتعديل).
+<ul class="sublist">
+<li>افعل: اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.</li>
+<li>تجنّب: لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</li>
+</ul>
+</li>
+<li><strong>القمر — تواصلك</strong> — القمر يضغط على تواصلك عبر تقابل (توتر بين طرفين).
+<ul class="sublist">
+<li>افعل: اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.</li>
+<li>تجنّب: لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</li>
+</ul>
+</li>
+<li><strong>القمر — طاقتك وحدودك</strong> — القمر يضغط على طاقتك وحدودك عبر تقابل (توتر بين طرفين).
+<ul class="sublist">
+<li>افعل: اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.</li>
+<li>تجنّب: لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</li>
+</ul>
+</li>
+</ul>
+<h2>نوافذ الشهر</h2>
+<ul>
+<li>نافذة 18 نوفمبر 16:31 — المريخ يلامس قمرك: انفعال أسرع وحاجة لتفريغ حركي.
+</li>
+<li>نافذة 21 نوفمبر 07:40 — المريخ يسهّل التزاماتك وحدودك عبر تثليث (تدفق وسهولة).
+</li>
+<li>نافذة 30 نوفمبر 11:49 — القمر يلامس قمرك: مزاج متغير واحتياج واضح للراحة.
+</li>
+</ul>
+<h2>تواريخ تحتاج هدوءًا</h2>
+<ul>
+<li>احذر 2 نوفمبر 00:07 — القمر يضغط على تحولك عبر تربيع (احتكاك يدفع للتعديل).
+</li>
+<li>احذر 4 نوفمبر 12:38 — القمر يلامس زهرتك: حنان سهل وتقدير صغير يكفي.
+</li>
+<li>احذر 5 نوفمبر 11:56 — القمر يضغط على طاقتك وحدودك عبر تقابل (توتر بين طرفين).
+</li>
+<li>احذر 6 نوفمبر 22:34 — القمر يضغط على محور شريكك عبر تقابل (توتر بين طرفين).
+</li>
+<li>احذر 12 نوفمبر 11:57 — القمر يضغط على تواصلك عبر تقابل (توتر بين طرفين).
+</li>
+<li>احذر 21 نوفمبر 10:49 — القمر يضغط على محور ظهورك عبر تقابل (توتر بين طرفين).
+</li>
+</ul>
+<h2>توصية الشهر</h2>
+<ul>
+<li>اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.
+</li>
+</ul>
+<blockquote>ثقة القراءة: عالية — بيانات الميلاد والوقت مكتملة.</blockquote></div></div>
+  </section>
+
+  <footer>
+    <span>تم التوليد بتاريخ 2026-11-09 · محرك Astromind</span>
+    <span><a href="https://github.com/muxd22-alt/ASTR">المستودع على GitHub</a></span>
+  </footer>
+</div>
+<script>
+  const tabs = document.querySelectorAll(".tab");
+  const panels = document.querySelectorAll(".panel");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((item) => item.classList.remove("active"));
+      panels.forEach((item) => item.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById(tab.dataset.panel).classList.add("active");
+    });
+  });
+</script>
+</body>
+</html>

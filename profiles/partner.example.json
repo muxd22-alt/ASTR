@@ -1,0 +1,16 @@
+{
+  "id": "partner",
+  "role": "partner",
+  "name": "الشريكة",
+  "birth": {
+    "date": "1992-09-03",
+    "time": "21:15",
+    "tz": "Asia/Riyadh",
+    "lat": 21.4858,
+    "lon": 39.1925,
+    "time_known": true
+  },
+  "focus": ["communication", "emotional_security", "conflict"],
+  "gender": "female",
+  "notes": "مثال فقط."
+}

@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Secrets and real birth data — never commit
+profiles.local/
+profiles/profiles.json
+.env
+*.secret
+!*.example.json
+
+# Generated state is local/private
+state/
+outputs/
+outputs_*/

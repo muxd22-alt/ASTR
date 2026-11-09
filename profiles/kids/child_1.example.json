@@ -1,0 +1,16 @@
+{
+  "id": "child_1",
+  "role": "child",
+  "name": "الطفل الأول",
+  "birth": {
+    "date": "2018-02-11",
+    "time": "04:40",
+    "tz": "Asia/Riyadh",
+    "lat": 24.7136,
+    "lon": 46.6753,
+    "time_known": true
+  },
+  "focus": ["parenting", "talent", "emotional_security"],
+  "gender": "male",
+  "notes": "مثال فقط."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "self",
+  "role": "self",
+  "name": "أنا",
+  "birth": {
+    "date": "1990-05-14",
+    "time": "07:30",
+    "tz": "Asia/Riyadh",
+    "lat": 24.7136,
+    "lon": 46.6753,
+    "time_known": true
+  },
+  "focus": ["communication", "emotional_security", "planning"],
+  "gender": "male",
+  "notes": "مثال فقط — استبدله ببياناتك الحقيقية في GitHub Secrets."
+}

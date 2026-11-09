@@ -1,0 +1,16 @@
+{
+  "id": "child_2",
+  "role": "child",
+  "name": "الطفل الثاني",
+  "birth": {
+    "date": "2021-11-27",
+    "time": "16:05",
+    "tz": "Asia/Riyadh",
+    "lat": 24.7136,
+    "lon": 46.6753,
+    "time_known": true
+  },
+  "focus": ["parenting", "talent", "emotional_security"],
+  "gender": "male",
+  "notes": "مثال فقط."
+}

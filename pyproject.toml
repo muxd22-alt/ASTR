@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "astromind"
+version = "0.2.0"
+description = "Multi-profile astrology engine: daily guidance, synastry, parenting, and timing calendars."
+requires-python = ">=3.11"
+dependencies = [
+    "pyswisseph>=2.10.3.2",
+    "tzdata>=2024.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pynacl>=1.5",
+]
+
+[project.scripts]
+astromind = "astromind.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

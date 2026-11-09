@@ -1,0 +1,83 @@
+name: Weekly Synastry Report
+
+on:
+  schedule:
+    - cron: "0 4 * * 0" # Sunday 07:00 Asia/Riyadh
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Any date inside the target week (YYYY-MM-DD)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: astromind-weekly
+  cancel-in-progress: false
+
+jobs:
+  weekly:
+    runs-on: ubuntu-latest
+    env:
+      ASTROMIND_PROFILES: ${{ secrets.ASTROMIND_PROFILES }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Restore delta state
+        uses: actions/cache@v4
+        with:
+          path: state
+          key: astromind-state-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: |
+            astromind-state-${{ github.ref_name }}-
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Validate profiles
+        run: python -m astromind validate
+
+      - name: Build weekly digest and calendar
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.date }}" ]; then
+            python -m astromind weekly --date "${{ inputs.date }}"
+            python -m astromind calendar --date "${{ inputs.date }}"
+          else
+            python -m astromind weekly
+            python -m astromind calendar
+          fi
+
+      - name: Show digest in run summary
+        if: always()
+        run: |
+          if [ -f outputs/this_week.md ]; then
+            cat outputs/this_week.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: astromind-weekly
+          path: outputs/
+          if-no-files-found: warn
+
+      - name: Persist reports (private repos only)
+        if: vars.COMMIT_OUTPUTS == 'true'
+        run: |
+          git config user.name "astromind-bot"
+          git config user.email "astromind@users.noreply.github.com"
+          git add -f outputs state
+          git diff --cached --quiet || git commit -m "chore: weekly astromind report"
+          git push
