@@ -57,6 +57,19 @@ def markdown_to_html(markdown: str) -> str:
             index += 1
             continue
 
+        if stripped in {"---", "***", "___"}:
+            out.append('<hr class="reading-divider">')
+            index += 1
+            continue
+
+        bold_title = re.fullmatch(r"\*\*(.+?)\*\*", stripped)
+        if bold_title and not out:
+            out.append(
+                f'<h1 class="reading-title">{inline(bold_title.group(1))}</h1>'
+            )
+            index += 1
+            continue
+
         heading = re.match(r"^(#{1,4})\s+(.*)$", stripped)
         if heading:
             level = len(heading.group(1))
@@ -492,8 +505,29 @@ def build_page(
       linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025));
     box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
   }}
-  .reading-card h1 {{ font-size: clamp(1.5rem, 3vw, 2rem); }}
-  .reading-card h2 {{ color: var(--gold-soft); }}
+  .report.reading-card h1,
+  .report.reading-card .reading-title {{
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-family: "Thmanyah Serif Display", serif;
+    font-weight: 900;
+    margin: 0 0 1rem;
+    background: linear-gradient(120deg, #fff 10%, var(--gold-soft) 55%, var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }}
+  .report.reading-card h2,
+  .report.reading-card h3 {{
+    color: var(--gold-soft);
+    font-family: "Thmanyah Serif Display", serif;
+  }}
+  .report.reading-card h3 {{ font-size: 1.15rem; margin: 1.3rem 0 0.5rem; }}
+  .reading-divider {{
+    border: 0;
+    height: 1px;
+    margin: 1rem 0;
+    background: linear-gradient(90deg, transparent, rgba(232, 192, 125, 0.35), transparent);
+  }}
   .chips {{ display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.9rem 0 0; }}
   .chip {{
     display: inline-flex; align-items: center; gap: 0.35rem;

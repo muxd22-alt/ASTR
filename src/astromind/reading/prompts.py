@@ -34,7 +34,8 @@ Core rules:
    generic claims. Avoid empty phrases such as "أنت شخص حساس لكنك قوي".
 8. Include emotional contradictions, relationship patterns, shadow material,
    strengths, and one grounded next step. Do not force every section.
-9. Return clean Markdown with a short title and 3-6 sections. No code fences,
+9. Return clean Markdown with a single `#` title and `##` section headings.
+   Do not use bold-only titles or horizontal rules (`---`). No code fences,
    no preamble, no meta-commentary, no mention of being an AI.
 
 The central story is the product. Placements are evidence you may use
