@@ -103,6 +103,10 @@ def build_story_spine(profile_facts: dict) -> dict[str, str]:
     mars = _element(placements, "mars")
     saturn = _element(placements, "saturn")
 
+    sect = profile_facts.get("sect", {})
+    annual = profile_facts.get("annual_focus", {})
+    lunation = profile_facts.get("lunation", {})
+
     return {
         "core_tension": PAIR_TENSION.get(
             (sun, moon),
@@ -115,8 +119,19 @@ def build_story_spine(profile_facts: dict) -> dict[str, str]:
         ),
         "shadow": SHADOW_SELF[saturn],
         "gift": GIFT_SELF[sun],
+        "sect_wisdom": str(sect.get("summary_ar") or ""),
+        "annual_theme": (
+            f"الباب الأهم في مرحلتك الحالية هو «{annual.get('topic_title', 'الهوية والحيوية')}»: "
+            f"{annual.get('topic_detail', 'تثبيت الأولويات الشخصية بوعي')}."
+        ),
+        "lunation_rhythm": (
+            f"{lunation.get('name_ar', '')}: {lunation.get('rhythm_ar', '')}"
+            if lunation.get("name_ar")
+            else ""
+        ),
         "instruction": (
-            "هذه هي السالفة الأساسية. اكتب عنها دون سرد المواضع أو الأبراج أو البيوت. "
-            "القارئ يعرف خريطته؛ لا تكررها عليه."
+            "هذه هي السالفة الأساسية المستندة إلى جذور التنجيم الكلاسيكي والنفسي "
+            "(Valens, Brennan, Demetra George, Liz Greene, Rudhyar, Brady, Hand). "
+            "اكتب عنها بلغة خفيفة وواضحة ومفيدة لكل نواحي الحياة دون سرد المواضع أو الأبراج أو البيوت."
         ),
     }

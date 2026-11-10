@@ -8,6 +8,13 @@ from zoneinfo import ZoneInfo
 
 from astromind.engines.charts import Chart
 from astromind.engines.child_development import ChildGuidance
+from astromind.engines.classical import (
+    build_life_domains,
+    compute_lunation,
+    compute_profection,
+    compute_sect,
+    split_eagle_and_lark,
+)
 from astromind.engines.ephemeris import from_jd
 from astromind.engines.signals import Signal
 from astromind.engines.synastry import (
@@ -225,6 +232,27 @@ def _quick_facts(chart: Chart) -> str:
     return "\n".join(f"- {row}" for row in rows)
 
 
+def _domains_block(data: ReportData, anchor: date) -> list[str]:
+    lunation = compute_lunation(anchor, data.tz)
+    domains = build_life_domains(
+        data.self_chart,
+        data.signals,
+        lunation,
+        as_of=data.as_of or data.start,
+    )
+    out = [
+        "## بوصلة النواحي الأربع",
+        "| الناحية | المؤشر | الخلاصة العملية | خطوة سريعة |",
+        "|---|---|---|---|",
+    ]
+    for item in domains:
+        out.append(
+            f"| **{item.title_ar}** | {item.badge_ar} ({item.score}%) | {item.headline} | {item.action} |"
+        )
+    out.append("")
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Daily
 # ---------------------------------------------------------------------------
@@ -235,9 +263,14 @@ def build_daily(data: ReportData) -> str:
     self_signals = data.signals.get("self", [])
     partner_signals = data.signals.get("partner", [])
     relationship = data.signals.get("relationship", [])
+    lunation = compute_lunation(day, data.tz)
 
     primary = self_signals[0] if self_signals else None
     lines = [f"# بطاقة اليوم — {format_date(day)}", ""]
+    lines.append(
+        f"**طور القمر اليوم (Rudhyar):** {lunation.name_ar} ({lunation.illumination}% إضاءة) — {lunation.rhythm_ar}"
+    )
+    lines.append("")
     if primary:
         lines.append(f"**الجو العام:** {primary.text.line}")
         lines.append("")
@@ -246,6 +279,8 @@ def build_daily(data: ReportData) -> str:
     else:
         lines.append("**الجو العام:** لا إشارة قوية اليوم؛ يوم مناسب للروتين والاستكمال.")
     lines.append("")
+
+    lines.extend(_domains_block(data, day))
 
     if data.bundle.partner:
         if relationship:
@@ -296,10 +331,25 @@ def build_daily(data: ReportData) -> str:
 
 def build_weekly(data: ReportData) -> str:
     start, end = data.start, data.end
+    anchor = data.as_of or start
+    lunation = compute_lunation(anchor, data.tz)
+    eagle, lark = split_eagle_and_lark(data.signals.get("self", []))
+
     title = f"# موجز الأسبوع — {format_date_short(start)} إلى {format_date_short(end)} {end.year}"
     lines = [title, ""]
     lines.append(f"**القمر هذا الأسبوع:** {_moon_line(data)}")
+    lines.append(
+        f"**إيقاع الدورة القمرية:** {lunation.name_ar} — {lunation.rhythm_ar}"
+    )
+    if eagle or lark:
+        eagle_txt = eagle[0].text.line if eagle else "ثبات في الإيقاع الهيكلي العام."
+        lark_txt = lark[0].text.line if lark else "حركة يومية خفيفة تدعم الإنجاز المتدرج."
+        lines.append(
+            f"**عدسة النسر والقبرة (Brady):** النسر (الاتجاه الأوسع): {eagle_txt} · القبرة (النبض اليومي): {lark_txt}"
+        )
     lines.append("")
+
+    lines.extend(_domains_block(data, anchor))
 
     lines.append(_section("طقسك الشخصي", data.signals.get("self", [])[:3], "لا إشارات قوية؛ أسبوع روتين واستكمال."))
     if data.bundle.partner:
@@ -381,12 +431,22 @@ def build_weekly(data: ReportData) -> str:
 
 
 def build_monthly(data: ReportData) -> str:
+    anchor = data.as_of or data.start
+    sect = compute_sect(data.self_chart, data.bundle.self_profile)
+    profection = compute_profection(data.self_chart, data.bundle.self_profile, anchor)
+
     lines = [
         f"# الدليل الشهري — {format_date_short(data.start)} إلى {format_date_short(data.end)} {data.end.year}",
         "",
     ]
     lines.append(f"**القمر خلال الشهر:** {_moon_line(data)}")
     lines.append("")
+    lines.append("## الجذور الكلاسيكية للشهر")
+    lines.append(f"- **الحيز الفلكي (George & Brennan):** {sect.summary_ar}")
+    lines.append(f"- **انتهاء السنة وحاكم الزمن (Valens):** {profection.summary_ar}")
+    lines.append("")
+
+    lines.extend(_domains_block(data, anchor))
 
     lines.append(_section("الخط العام للشهر", data.signals.get("self", [])[:4], "شهر هادئ نسبيًا؛ راجع أولوياتك."))
 

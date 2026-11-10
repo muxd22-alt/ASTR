@@ -6,6 +6,12 @@ from datetime import date
 
 from astromind.engines.aspects import allowed_orb, detect_aspect
 from astromind.engines.charts import Chart
+from astromind.engines.classical import (
+    build_life_domains,
+    compute_lunation,
+    compute_profection,
+    compute_sect,
+)
 from astromind.engines.ephemeris import house_of
 from astromind.generators.md_builder import ReportData
 from astromind.i18n import BODIES_AR, SIGNS_AR, element_ar, sign_element, sign_of
@@ -168,7 +174,42 @@ def moon_facts(data: ReportData) -> list[dict[str, object]]:
 def build_reading_facts(context, data: ReportData, mode: str) -> dict[str, object]:
     profile = context.bundle.self_profile
     chart = context.charts[profile.id]
+    anchor = data.as_of or data.start
+    lunation = compute_lunation(anchor, data.tz)
+    sect = compute_sect(chart, profile)
+    profection = compute_profection(chart, profile, anchor)
+    domains = build_life_domains(chart, data.signals, lunation, as_of=anchor)
+
     profile_facts = chart_facts(chart, profile)
+    profile_facts["sect"] = {
+        "is_diurnal": sect.is_diurnal,
+        "label_ar": sect.label_ar,
+        "summary_ar": sect.summary_ar,
+    }
+    profile_facts["annual_focus"] = {
+        "topic_title": profection.topic_title,
+        "topic_detail": profection.topic_detail,
+        "time_lord": profection.time_lord,
+    }
+    profile_facts["lunation"] = {
+        "name_ar": lunation.name_ar,
+        "rhythm_ar": lunation.rhythm_ar,
+        "work_tip": lunation.work_tip,
+        "relation_tip": lunation.relation_tip,
+        "energy_tip": lunation.energy_tip,
+    }
+    profile_facts["life_domains"] = [
+        {
+            "key": d.key,
+            "title_ar": d.title_ar,
+            "badge_ar": d.badge_ar,
+            "score": d.score,
+            "headline": d.headline,
+            "action": d.action,
+            "avoid": d.avoid,
+        }
+        for d in domains
+    ]
     profile_facts["story_spine"] = build_story_spine(profile_facts)
     facts: dict[str, object] = {
         "as_of": data.as_of.isoformat() if data.as_of else data.start.isoformat(),

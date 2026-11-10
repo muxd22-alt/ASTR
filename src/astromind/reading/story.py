@@ -32,32 +32,61 @@ def _transit_line(row: dict) -> str:
     return f"{when}: {row.get('line', '')} — {row.get('action', '')}"
 
 
+def _sanitize_signs(text: str) -> str:
+    """Ensure fallback prose never recites raw zodiac sign names."""
+    cleaned = text
+    for sign in SIGNS_AR:
+        cleaned = cleaned.replace(sign, "هذا المسار")
+    cleaned = PLACEMENT_INVENTORY.sub("في هذا المحور", cleaned)
+    return cleaned
+
+
 def _opening(facts: dict) -> str:
     spine = _spine(facts)
+    lunation_rhythm = spine.get("lunation_rhythm", "")
+    extra = f" {lunation_rhythm}" if lunation_rhythm else ""
     return (
         f"{spine.get('core_tension', '')} "
-        f"{spine.get('outer_style', '')} "
-        "القراءة هنا لا تشرح خريطتك؛ إنها تحاول أن تسمع القصة التي تعيشها."
+        f"{spine.get('outer_style', '')}{extra} "
+        "القراءة هنا تجمع بين حكمة المدرسة الكلاسيكية وعمق التحليل النفسي لتمنحك بوصلة خفيفة وعملية ليومك."
     ).strip()
 
 
 def _inner(facts: dict) -> str:
     spine = _spine(facts)
+    sect_wisdom = spine.get("sect_wisdom", "")
     return (
         f"احتياجك العاطفي الأساسي: {spine.get('core_need', '')} "
-        "قد يبدو هذا الاحتياج بسيطًا، لكنه يصبح واضحًا في اللحظات التي تشعر فيها "
-        "أن أحدًا لا يرى ما تحتاجه فعلًا. حين تهدأ، اسأل: هل أطلب القرب بطريقة "
-        "يمكن للآخر أن يفهمها، أم أطلب أن يخمّن؟"
-    )
+        f"{sect_wisdom} "
+        "حين تهدأ، اسأل نفسك: هل أعبّر عن حاجتي للأمان بلغة مباشرة يفهمها من حولي، "
+        "أم أنتظر أن يلتقطوا الإشارة وحدهم؟"
+    ).strip()
 
 
 def _outer(facts: dict) -> str:
     spine = _spine(facts)
+    annual = spine.get("annual_theme", "")
     return (
         f"{spine.get('relationship_pattern', '')} "
-        "الفرق بين ما تحتاجه وما تُظهره هو غالبًا مساحة سوء الفهم. "
-        "قل احتياجك قبل أن تختبره بالصمت."
-    )
+        f"{annual} "
+        "الفرق بين ما تحتاجه في داخلك وما تُظهره للخارج هو المساحة التي تحتاج منك كلمة واضحة ومبادرة هادئة."
+    ).strip()
+
+
+def _domains_summary(facts: dict) -> str:
+    domains = facts.get("profile", {}).get("life_domains", [])
+    if not domains:
+        return ""
+    lines: list[str] = []
+    for item in domains:
+        title = item.get("title_ar", "")
+        badge = item.get("badge_ar", "")
+        action = _sanitize_signs(str(item.get("action", "")))
+        avoid = _sanitize_signs(str(item.get("avoid", "")))
+        lines.append(
+            f"- **{title} ({badge}):** افعل: {action} | تجنّب: {avoid}"
+        )
+    return "\n".join(lines)
 
 
 def _shadow(facts: dict) -> str:
@@ -112,6 +141,9 @@ def build_fallback_story(facts: dict, mode: str) -> str:
     parts.append("## العالم الخارجي\n" + _outer(facts))
     parts.append("## الظل\n" + _shadow(facts))
     parts.append("## طاقة اليوم\n" + _current(facts))
+    domains_block = _domains_summary(facts)
+    if domains_block:
+        parts.append("## بوصلة النواحي العملية\n" + domains_block)
     parts.append("## الهدية\n" + _gift(facts))
 
     if mode == "deep":
@@ -131,6 +163,8 @@ def build_fallback_story(facts: dict, mode: str) -> str:
             parts.append("## إيقاع القمر\n" + "\n".join(moon_lines))
 
     parts.append("## الرسالة\n" + _closing(facts))
+    if mode != "deep":
+        return _sanitize_signs("\n\n".join(parts).strip()) + "\n"
     return "\n\n".join(parts).strip() + "\n"
 
 

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Astromind — عرض حي لـ مثال</title>
+<title>Astromind — مثال · Apple Bento Edition</title>
 <style>
   @font-face {
     font-family: "Thmanyah Sans";
@@ -75,410 +75,1043 @@
     font-style: normal;
     font-display: swap;
   }
-  :root {
-    --bg: #070b18;
-    --bg-2: #0d1428;
-    --card: rgba(255, 255, 255, 0.045);
-    --card-strong: rgba(255, 255, 255, 0.075);
-    --line: rgba(232, 192, 125, 0.18);
-    --gold: #e8c07d;
-    --gold-soft: #f4ddb0;
-    --text: #eef1f8;
-    --muted: #9aa6bf;
-    --accent: #8fb8ff;
-    --danger: #ffb9a8;
-    --radius: 20px;
+
+  /* Official Apple System Colors & Pro Dark Titanium (Default) */
+  :root,
+  html[data-theme="dark"] {
+    --apple-blue: #0A84FF;
+    --apple-orange: #FF9F0A;
+    --apple-green: #30D158;
+    --apple-red: #FF453A;
+
+    --bg-base: #090A0F;
+    --bg-elevated: #12141D;
+    --bento-bg: rgba(24, 26, 36, 0.62);
+    --bento-bg-strong: rgba(32, 35, 48, 0.78);
+    --pill-nav-bg: rgba(20, 22, 32, 0.58);
+    --specular-border: rgba(255, 255, 255, 0.13);
+    --specular-top: rgba(255, 255, 255, 0.24);
+    --hairline-divider: rgba(255, 255, 255, 0.08);
+
+    --text: #F5F5F7;
+    --text-secondary: #A1A1AA;
+    --muted: #8E8E93;
+    --heading-gradient: linear-gradient(135deg, #FFFFFF 0%, #D2E8FF 52%, #0A84FF 100%);
+    --card-shadow: 0 22px 48px -12px rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+    --nav-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.24);
+    --mesh-opacity: 0.16;
+    --bento-radius: 25px;
+    --radius: 25px;
   }
+
+  /* Apple Daylight Silver Theme */
+  html[data-theme="light"] {
+    --apple-blue: #0A84FF;
+    --apple-orange: #FF9F0A;
+    --apple-green: #30D158;
+    --apple-red: #FF453A;
+
+    --bg-base: #F5F5F7;
+    --bg-elevated: #FFFFFF;
+    --bento-bg: rgba(255, 255, 255, 0.74);
+    --bento-bg-strong: rgba(255, 255, 255, 0.88);
+    --pill-nav-bg: rgba(255, 255, 255, 0.68);
+    --specular-border: rgba(15, 23, 42, 0.09);
+    --specular-top: rgba(255, 255, 255, 0.92);
+    --hairline-divider: rgba(15, 23, 42, 0.08);
+
+    --text: #1D1D1F;
+    --text-secondary: #48484A;
+    --muted: #6E6E73;
+    --heading-gradient: linear-gradient(135deg, #1D1D1F 0%, #0A84FF 70%, #FF9F0A 100%);
+    --card-shadow: 0 18px 40px -14px rgba(15, 23, 42, 0.09), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
+    --nav-shadow: 0 12px 32px rgba(15, 23, 42, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
+    --mesh-opacity: 0.11;
+  }
+
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
     margin: 0;
     min-height: 100vh;
     color: var(--text);
-    font-family: "Thmanyah Sans", "Segoe UI", Tahoma, sans-serif;
-    background:
-      radial-gradient(circle at 15% 10%, rgba(143, 184, 255, 0.16), transparent 32rem),
-      radial-gradient(circle at 85% 0%, rgba(232, 192, 125, 0.14), transparent 28rem),
-      radial-gradient(circle at 50% 100%, rgba(120, 90, 200, 0.12), transparent 36rem),
-      linear-gradient(180deg, var(--bg), var(--bg-2) 55%, #060912);
-    line-height: 1.85;
+    font-family: "Thmanyah Sans", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+    background-color: var(--bg-base);
+    background-image:
+      radial-gradient(circle at 14% 8%, rgba(10, 132, 255, var(--mesh-opacity)), transparent 34rem),
+      radial-gradient(circle at 86% 12%, rgba(255, 159, 10, var(--mesh-opacity)), transparent 30rem),
+      radial-gradient(circle at 18% 82%, rgba(48, 209, 88, calc(var(--mesh-opacity) * 0.85)), transparent 32rem),
+      radial-gradient(circle at 84% 88%, rgba(255, 69, 58, calc(var(--mesh-opacity) * 0.75)), transparent 32rem);
+    background-attachment: fixed;
+    line-height: 1.8;
+    transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s ease;
   }
-  .stars {
-    position: fixed;
+
+  /* Floating Glass Pill Navbar */
+  .floating-nav-wrap {
+    position: sticky;
+    top: 1rem;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: 0 1rem;
+    margin-top: 1rem;
+  }
+  .floating-pill-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+    width: min(1160px, 100%);
+    padding: 0.55rem 0.85rem;
+    border-radius: 999px;
+    background: var(--pill-nav-bg);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border: 1px solid var(--specular-border);
+    box-shadow: var(--nav-shadow);
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .nav-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.25rem 0.65rem;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .brand-orb {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--apple-blue), var(--apple-orange));
+    box-shadow: 0 0 12px var(--apple-blue);
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-link {
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.38rem 0.82rem;
+    border-radius: 999px;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.22s ease;
+  }
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--text);
+    background: rgba(10, 132, 255, 0.14);
+    border-color: rgba(10, 132, 255, 0.34);
+  }
+
+  /* Instant Theme Switcher Pill (Pro Dark Titanium <-> Apple Daylight Silver) */
+  .theme-toggle {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.42rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--specular-border);
+    background: linear-gradient(135deg, rgba(10, 132, 255, 0.16), rgba(255, 159, 10, 0.14));
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 0 var(--specular-top);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .theme-toggle:hover {
+    transform: translateY(-1px);
+    border-color: var(--apple-blue);
+  }
+  .theme-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--apple-orange);
+    box-shadow: 0 0 8px var(--apple-orange);
+  }
+
+  .wrap {
+    position: relative;
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 1.8rem 0 4.5rem;
+  }
+
+  /* Apple Bento Cards & Specular Hairline Borders */
+  .bento-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--bento-radius);
+    background: var(--bento-bg);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border: 1px solid var(--specular-border);
+    box-shadow: var(--card-shadow);
+    padding: 1.5rem;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease, background 0.3s ease;
+  }
+  .bento-card::before {
+    content: "";
+    position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.55;
-    background-image:
-      radial-gradient(1px 1px at 12% 18%, #fff, transparent),
-      radial-gradient(1px 1px at 28% 42%, rgba(255,255,255,0.8), transparent),
-      radial-gradient(1.5px 1.5px at 64% 12%, #ffe9bd, transparent),
-      radial-gradient(1px 1px at 76% 58%, rgba(255,255,255,0.7), transparent),
-      radial-gradient(1px 1px at 88% 32%, #cfe0ff, transparent),
-      radial-gradient(1px 1px at 44% 82%, rgba(255,255,255,0.6), transparent),
-      radial-gradient(1.5px 1.5px at 8% 72%, #ffe9bd, transparent);
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at 90% 10%,
+      color-mix(in srgb, var(--card-accent, var(--apple-blue)) 18%, transparent),
+      transparent 62%
+    );
+    opacity: 0.9;
   }
-  .wrap { position: relative; width: min(1120px, calc(100% - 2rem)); margin: 0 auto; padding: 3.2rem 0 4rem; }
-  header.hero { text-align: center; padding: 1rem 0 2.4rem; }
-  .badge {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    border: 1px solid var(--line); border-radius: 999px;
-    padding: 0.35rem 0.95rem; color: var(--gold-soft);
-    background: rgba(232, 192, 125, 0.06); font-size: 0.85rem; letter-spacing: 0.02em;
-  }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 12px var(--gold); }
-  h1 { font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1.1; margin: 1rem 0 0.4rem; letter-spacing: -0.02em; font-family: "Thmanyah Serif Display", serif; font-weight: 900; }
-  h1 span { background: linear-gradient(120deg, #fff 10%, var(--gold-soft) 55%, var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .subtitle { color: var(--muted); font-size: clamp(1rem, 2vw, 1.2rem); margin: 0; }
-  .big-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2.2rem 0 1rem; }
-  .big-card {
-    position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius);
-    padding: 1.4rem 1rem; background: linear-gradient(160deg, var(--card-strong), var(--card));
-    text-align: center; backdrop-filter: blur(8px);
-  }
-  .big-card::after {
-    content: ""; position: absolute; inset: auto -20% -60% -20%; height: 80%;
-    background: radial-gradient(circle, rgba(232, 192, 125, 0.12), transparent 70%);
-  }
-  .big-label { color: var(--muted); font-size: 0.9rem; }
-  .big-sign { font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 700; color: var(--gold-soft); margin: 0.2rem 0; font-family: "Thmanyah Serif Display", serif; }
-  .big-caption { color: var(--muted); font-size: 0.82rem; }
-  .note {
-    margin: 1.2rem 0 2.4rem; padding: 1rem 1.2rem; border-radius: 16px;
-    border: 1px solid rgba(255, 185, 168, 0.28); background: rgba(255, 185, 168, 0.06);
-    color: #ffd8cd; font-size: 0.95rem;
-  }
-  .note strong { color: #fff0eb; }
-  .birth { display: block; margin-top: 0.35rem; color: var(--muted); font-size: 0.84rem; }
-  .reading-card {
+  .bento-card > * {
     position: relative;
-    border: 1px solid rgba(232, 192, 125, 0.32);
-    background:
-      radial-gradient(circle at 92% 4%, rgba(232, 192, 125, 0.13), transparent 24rem),
-      linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025));
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+    z-index: 1;
   }
-  .report.reading-card h1,
-  .report.reading-card .reading-title {
-    font-size: clamp(1.5rem, 3vw, 2rem);
+
+  /* Hero Bento Header */
+  header.hero-bento {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 1.1rem;
+    margin-bottom: 1.1rem;
+  }
+  .hero-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    border: 1px solid var(--specular-border);
+    border-radius: 999px;
+    padding: 0.32rem 0.9rem;
+    color: var(--text-secondary);
+    background: rgba(10, 132, 255, 0.1);
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--apple-green);
+    box-shadow: 0 0 10px var(--apple-green);
+  }
+  h1 {
+    font-size: clamp(2.1rem, 4.6vw, 3.5rem);
+    line-height: 1.12;
+    margin: 0.85rem 0 0.35rem;
+    letter-spacing: -0.02em;
     font-family: "Thmanyah Serif Display", serif;
     font-weight: 900;
-    margin: 0 0 1rem;
-    background: linear-gradient(120deg, #fff 10%, var(--gold-soft) 55%, var(--accent));
+  }
+  h1 span {
+    background: var(--heading-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  .report.reading-card h2,
-  .report.reading-card h3 {
-    color: var(--gold-soft);
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    margin: 0 0 1rem;
+    font-weight: 500;
+  }
+  .hero-meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+  }
+  .meta-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--specular-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
+  }
+  .meta-tag strong { color: var(--text); }
+
+  /* Hero Quick Pulse Card */
+  .hero-pulse {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .pulse-kicker {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--apple-orange);
+    letter-spacing: 0.03em;
+  }
+  .pulse-title {
+    font-family: "Thmanyah Serif Display", serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0.15rem 0;
+  }
+  .pulse-desc {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+  .confidence-banner {
+    padding: 0.75rem 0.95rem;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 159, 10, 0.28);
+    background: rgba(255, 159, 10, 0.08);
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+  }
+  .confidence-banner strong { color: var(--text); }
+
+  /* Big Three Bento Row */
+  .big-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.1rem;
+    margin-bottom: 1.6rem;
+  }
+  .big-card {
+    padding: 1.35rem 1.4rem;
+  }
+  .big-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .big-label {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+  .big-pill {
+    font-size: 0.74rem;
+    padding: 0.18rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--specular-border);
+    color: var(--text-secondary);
+  }
+  .big-sign {
+    font-size: clamp(1.65rem, 3.5vw, 2.25rem);
+    font-weight: 900;
+    margin: 0.35rem 0 0.2rem;
+    font-family: "Thmanyah Serif Display", serif;
+    color: var(--text);
+  }
+  .big-caption {
+    color: var(--muted);
+    font-size: 0.83rem;
+  }
+
+  /* Section Headers */
+  section { margin-top: 2.4rem; }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  h2 {
+    font-size: clamp(1.35rem, 2.6vw, 1.85rem);
+    margin: 0;
+    font-family: "Thmanyah Serif Display", serif;
+    font-weight: 700;
+  }
+  .section-head p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* 4 Life-Domains Bento Grid */
+  .domains-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
+  }
+  .domain-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .domain-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+  .domain-kicker {
+    display: inline-block;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--card-accent);
+  }
+  .domain-title {
+    margin: 0.1rem 0 0;
+    font-size: 1.25rem;
     font-family: "Thmanyah Serif Display", serif;
   }
-  .report.reading-card h3 { font-size: 1.15rem; margin: 1.3rem 0 0.5rem; }
+  .domain-ring {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--card-accent);
+    background: color-mix(in srgb, var(--card-accent) 12%, transparent);
+    font-weight: 700;
+    font-size: 0.84rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .domain-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--hairline-divider);
+    overflow: hidden;
+  }
+  .domain-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--card-accent);
+  }
+  .domain-headline {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  .domain-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: auto;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--hairline-divider);
+    font-size: 0.86rem;
+  }
+  .action-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+  }
+  .action-tag {
+    flex-shrink: 0;
+    font-size: 0.73rem;
+    font-weight: 700;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+  }
+  .do-tag {
+    background: rgba(48, 209, 88, 0.16);
+    color: var(--apple-green);
+    border: 1px solid rgba(48, 209, 88, 0.35);
+  }
+  .avoid-tag {
+    background: rgba(255, 69, 58, 0.15);
+    color: var(--apple-red);
+    border: 1px solid rgba(255, 69, 58, 0.35);
+  }
+
+  /* Segmented Apple Pill Tabs for Daily / Weekly / Monthly / Story */
+  .reading-hub-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+  .tabs {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding: 0.35rem;
+    border-radius: 999px;
+    background: var(--pill-nav-bg);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border: 1px solid var(--specular-border);
+    box-shadow: inset 0 1px 0 0 var(--specular-top);
+  }
+  .tab {
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.48rem 1.15rem;
+    transition: all 0.22s ease;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    background: var(--apple-blue);
+    color: #FFFFFF;
+    box-shadow: 0 6px 18px rgba(10, 132, 255, 0.38);
+  }
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn 0.28s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Report & Reading Card Typography */
+  .report {
+    border-radius: var(--bento-radius);
+    background: var(--bento-bg-strong);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    border: 1px solid var(--specular-border);
+    box-shadow: var(--card-shadow);
+    padding: clamp(1.25rem, 3vw, 2.2rem);
+  }
+  .report h1,
+  .report .reading-title {
+    font-size: clamp(1.45rem, 2.8vw, 1.95rem);
+    font-family: "Thmanyah Serif Display", serif;
+    font-weight: 900;
+    margin: 0 0 1rem;
+    background: var(--heading-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .report h2 {
+    font-size: 1.22rem;
+    margin: 1.5rem 0 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--hairline-divider);
+    color: var(--apple-blue);
+    font-family: "Thmanyah Serif Display", serif;
+  }
+  .report h3 {
+    font-size: 1.06rem;
+    margin: 1.15rem 0 0.4rem;
+    color: var(--apple-orange);
+    font-family: "Thmanyah Serif Display", serif;
+  }
+  .report p { margin: 0.65rem 0; color: var(--text); }
+  .report strong { color: var(--text); font-weight: 700; }
+  .report ul { margin: 0.45rem 0 0.9rem; padding-inline-start: 1.25rem; }
+  .report li { margin: 0.35rem 0; }
+  .report ul.sublist { margin: 0.2rem 0 0.4rem; color: var(--text-secondary); font-size: 0.92rem; }
+  .report blockquote {
+    margin: 1.2rem 0 0;
+    padding: 0.85rem 1.1rem;
+    border-radius: 16px;
+    border-inline-start: 3px solid var(--apple-blue);
+    background: rgba(10, 132, 255, 0.08);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
   .reading-divider {
     border: 0;
     height: 1px;
-    margin: 1rem 0;
-    background: linear-gradient(90deg, transparent, rgba(232, 192, 125, 0.35), transparent);
+    margin: 1.1rem 0;
+    background: linear-gradient(90deg, transparent, var(--specular-border), transparent);
   }
-  .chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.9rem 0 0; }
+
+  .table-wrap { overflow-x: auto; margin: 0.85rem 0; border-radius: 16px; border: 1px solid var(--hairline-divider); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { padding: 0.65rem 0.75rem; border-bottom: 1px solid var(--hairline-divider); text-align: right; }
+  th { color: var(--apple-blue); font-weight: 700; background: rgba(10, 132, 255, 0.06); }
+
+  /* Signal Chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0 0; }
   .chip {
-    display: inline-flex; align-items: center; gap: 0.35rem;
-    border: 1px solid rgba(255,255,255,0.11); border-radius: 999px;
-    padding: 0.28rem 0.7rem; color: var(--muted); font-size: 0.78rem;
-    background: rgba(255,255,255,0.035);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid var(--specular-border);
+    border-radius: 999px;
+    padding: 0.32rem 0.8rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    background: var(--bento-bg);
+    backdrop-filter: blur(16px);
   }
-  .chip b { color: var(--gold-soft); font-weight: 700; }
-  .chip.muted { opacity: 0.72; }
+  .chip-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--chip-color, var(--apple-blue));
+    box-shadow: 0 0 8px var(--chip-color, var(--apple-blue));
+  }
+  .chip b { color: var(--text); font-weight: 700; }
+
+  /* Interactive Charts Bento Grid */
+  .charts-bento-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 1.1rem;
+  }
+  .chart-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .chart-box-head {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+  }
+  .chart-box-head h3 {
+    margin: 0;
+    font-size: 1.12rem;
+    font-family: "Thmanyah Serif Display", serif;
+  }
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    margin-top: 0.65rem;
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .legend-swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  canvas.astro-canvas {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    display: block;
+  }
+
+  /* Classical Trio Bento Grid */
+  .classical-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.1rem;
+  }
+  .classical-card h3 {
+    margin: 0.25rem 0 0.45rem;
+    font-size: 1.15rem;
+    font-family: "Thmanyah Serif Display", serif;
+  }
+  .classical-card p {
+    margin: 0 0 0.8rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  .card-kicker {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--card-accent);
+    letter-spacing: 0.02em;
+  }
+  .classical-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: auto;
+  }
+  .mini-pill {
+    font-size: 0.75rem;
+    padding: 0.22rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--pill-color, var(--apple-blue)) 40%, transparent);
+    background: color-mix(in srgb, var(--pill-color, var(--apple-blue)) 12%, transparent);
+    color: var(--text);
+  }
+
+  /* Top 10 Books Bento Shelf */
+  .books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .book-card {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .book-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.76rem;
+    color: var(--muted);
+  }
+  .book-num {
+    font-weight: 900;
+    color: var(--card-accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .book-title {
+    margin: 0.1rem 0;
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--text);
+    text-align: left;
+  }
+  .book-concept {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--card-accent);
+  }
+  .book-insight {
+    margin: 0.2rem 0 0;
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+  }
+
+  /* Natal Placements Fold & Cards */
   .fold {
-    margin-top: 1.5rem; border: 1px solid rgba(255,255,255,0.09);
-    border-radius: var(--radius); background: rgba(255,255,255,0.025);
+    margin-top: 1.8rem;
+    border: 1px solid var(--specular-border);
+    border-radius: var(--bento-radius);
+    background: var(--bento-bg);
+    backdrop-filter: saturate(180%) blur(28px);
+    -webkit-backdrop-filter: saturate(180%) blur(28px);
+    box-shadow: var(--card-shadow);
     overflow: hidden;
   }
   .fold > summary {
-    cursor: pointer; list-style: none; padding: 1rem 1.2rem;
-    font-family: "Thmanyah Serif Display", serif; font-weight: 700;
-    color: var(--gold-soft); display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer;
+    list-style: none;
+    padding: 1.15rem 1.4rem;
+    font-family: "Thmanyah Serif Display", serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   .fold > summary::-webkit-details-marker { display: none; }
-  .fold > summary::after { content: "+"; color: var(--muted); font-size: 1.1rem; }
-  .fold[open] > summary { border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .fold > summary::after { content: "+"; color: var(--apple-blue); font-size: 1.25rem; font-weight: 700; }
+  .fold[open] > summary { border-bottom: 1px solid var(--hairline-divider); }
   .fold[open] > summary::after { content: "−"; }
-  .fold-body { padding: 1rem 1.2rem 1.3rem; }
-  .fold-note { margin: 0 0 0.8rem; color: var(--muted); font-size: 0.86rem; }
-  section { margin-top: 2.6rem; }
-  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
-  h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); margin: 0; font-family: "Thmanyah Serif Display", serif; font-weight: 700; }
-  .section-head p { margin: 0; color: var(--muted); font-size: 0.9rem; }
-  .placements { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; }
+  .fold-body { padding: 1.2rem 1.4rem 1.5rem; }
+  .fold-note { margin: 0 0 1rem; color: var(--muted); font-size: 0.86rem; }
+
+  .placements {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    gap: 0.85rem;
+  }
   .placement {
-    border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 16px; padding: 0.9rem 1rem;
-    background: var(--card);
+    border: 1px solid var(--specular-border);
+    border-radius: 20px;
+    padding: 0.95rem 1rem;
+    background: var(--bento-bg-strong);
+    box-shadow: inset 0 1px 0 0 var(--specular-top);
   }
-  .placement-body { color: var(--muted); font-size: 0.82rem; }
-  .placement-sign { color: var(--gold-soft); font-size: 1.35rem; font-weight: 700; margin: 0.1rem 0 0.25rem; font-family: "Thmanyah Serif Display", serif; }
-  .placement-degree { color: var(--muted); font-size: 0.78rem; margin-bottom: 0.15rem; font-variant-numeric: tabular-nums; }
-  .placement-meta { display: flex; justify-content: space-between; gap: 0.5rem; color: var(--muted); font-size: 0.76rem; }
-  .tabs { display: flex; flex-wrap: wrap; gap: 0.55rem; margin: 1.2rem 0 1rem; }
-  .tab {
-    appearance: none; border: 1px solid var(--line); border-radius: 999px; cursor: pointer;
-    background: transparent; color: var(--muted); font-family: inherit; font-size: 0.95rem;
-    padding: 0.5rem 1.15rem; transition: 0.2s ease;
+  .placement-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  .tab:hover { color: var(--text); border-color: rgba(232, 192, 125, 0.4); }
-  .tab.active { background: linear-gradient(120deg, rgba(232, 192, 125, 0.22), rgba(143, 184, 255, 0.16)); color: #fff; border-color: rgba(232, 192, 125, 0.55); }
-  .panel { display: none; }
-  .panel.active { display: block; }
-  .report {
-    border: 1px solid rgba(255, 255, 255, 0.09); border-radius: var(--radius);
-    background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
-    padding: clamp(1.1rem, 3vw, 2rem); backdrop-filter: blur(10px);
+  .placement-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--pill-accent, var(--apple-blue));
   }
-  .report h1 { font-size: 1.6rem; margin: 0 0 1rem; color: var(--gold-soft); font-family: "Thmanyah Serif Display", serif; }
-  .report h2 { font-size: 1.22rem; margin: 1.6rem 0 0.65rem; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-family: "Thmanyah Serif Display", serif; }
-  .report h3 { font-size: 1.05rem; margin: 1.2rem 0 0.4rem; }
-  .report p { margin: 0.65rem 0; }
-  .report strong { color: #fff; font-weight: 700; }
-  .report ul { margin: 0.4rem 0 0.9rem; padding-inline-start: 1.2rem; }
-  .report li { margin: 0.35rem 0; }
-  .report ul.sublist { margin: 0.15rem 0 0.35rem; color: var(--muted); font-size: 0.92rem; }
-  .report blockquote {
-    margin: 1.2rem 0 0; padding: 0.8rem 1rem; border-radius: 12px;
-    border-inline-start: 3px solid var(--gold); background: rgba(232, 192, 125, 0.06);
+  .placement-body { color: var(--text-secondary); font-size: 0.82rem; font-weight: 500; }
+  .placement-sign {
+    color: var(--text);
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0.15rem 0 0.2rem;
+    font-family: "Thmanyah Serif Display", serif;
+  }
+  .placement-degree {
+    color: var(--apple-blue);
+    font-size: 0.78rem;
+    margin-bottom: 0.2rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .placement-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
     color: var(--muted);
+    font-size: 0.76rem;
   }
-  .table-wrap { overflow-x: auto; margin: 0.8rem 0; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-  th, td { padding: 0.55rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: right; }
-  th { color: var(--gold-soft); font-weight: 700; background: rgba(232, 192, 125, 0.05); }
-  footer { margin-top: 3rem; padding-top: 1.4rem; border-top: 1px solid rgba(255,255,255,0.08); color: var(--muted); font-size: 0.86rem; display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; justify-content: space-between; }
-  footer a { color: var(--gold-soft); text-decoration: none; }
-  @media (max-width: 620px) {
-    .big-grid { grid-template-columns: 1fr; }
-    .section-head { flex-direction: column; gap: 0.2rem; }
+  .placement-ruler {
+    margin-top: 0.35rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--hairline-divider);
+    font-size: 0.74rem;
+    color: var(--text-secondary);
+  }
+
+  footer {
+    margin-top: 3.2rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--hairline-divider);
+    color: var(--muted);
+    font-size: 0.85rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.2rem;
+    justify-content: space-between;
+  }
+  footer a { color: var(--apple-blue); text-decoration: none; font-weight: 500; }
+
+  @media (max-width: 900px) {
+    header.hero-bento,
+    .charts-bento-grid,
+    .classical-grid,
+    .domains-grid {
+      grid-template-columns: 1fr;
+    }
+    .big-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 </head>
 <body>
-<div class="stars"></div>
-<div class="wrap">
-  <header class="hero">
-    <div class="badge"><span class="dot"></span> قراءة تأملية · تُحدَّث آليًا</div>
-    <h1><span>مثال</span></h1>
-    <p class="subtitle">الشمس السرطان · القمر الحمل · الطالع الحمل</p>
+
+<!-- Floating Glass Pill Navbar -->
+<div class="floating-nav-wrap">
+  <nav class="floating-pill-nav" aria-label="التنقل الرئيسي">
+    <a class="nav-brand" href="#top">
+      <span class="brand-orb"></span>
+      <span>Astromind</span>
+    </a>
+    <div class="nav-links">
+      <button type="button" class="nav-link active" data-jump-panel="daily">قراءة اليوم</button>
+      <button type="button" class="nav-link" data-jump-panel="weekly">موجز الأسبوع</button>
+      <button type="button" class="nav-link" data-jump-panel="monthly">الدليل الشهري</button>
+      <button type="button" class="nav-link" data-jump-panel="story">القراءة التأملية</button>
+      <a class="nav-link" href="#compass">النواحي الأربع</a>
+      <a class="nav-link" href="#charts">المخططات الحية</a>
+      <a class="nav-link" href="#books">الكتب العشرة</a>
+    </div>
+    <button type="button" class="theme-toggle" id="themeToggle" aria-label="تبديل المظهر بين الليلي والنهاري">
+      <span class="theme-indicator"></span>
+      <span id="themeLabel">Pro Dark Titanium</span>
+    </button>
+  </nav>
+</div>
+
+<div class="wrap" id="top">
+  <!-- Hero Apple Bento Section -->
+  <header class="hero-bento">
+    <div class="bento-card hero-main" style="--card-accent: #0A84FF">
+      <div>
+        <div class="badge"><span class="dot"></span> قراءة يومية وأسبوعية وشهرية · جذور التنجيم الكلاسيكي والنفسي</div>
+        <h1><span>مثال</span></h1>
+        <p class="subtitle">الشمس السرطان · القمر الحمل · الطالع الحمل</p>
+      </div>
+      <div class="hero-meta-bar">
+        <span class="meta-tag"><strong>التاريخ:</strong> الثلاثاء 10 نوفمبر 2026</span>
+        <span class="meta-tag"><strong>الحيز:</strong> خريطة ليلية (Nocturnal Sect)</span>
+        <span class="meta-tag"><strong>حاكم السنة:</strong> عطارد (البيت 3)</span>
+      </div>
+    </div>
+
+    <div class="bento-card hero-pulse" style="--card-accent: #FF9F0A">
+      <div>
+        <div class="pulse-kicker">طور القمر اليوم · Dane Rudhyar</div>
+        <div class="pulse-title">المحاق الوليد — طور البذرة</div>
+        <p class="pulse-desc">بداية دورة جديدة؛ الطاقة تتجه للداخل لتحديد النية قبل الظهور.</p>
+      </div>
+      <div class="confidence-banner">
+        <strong>حدود القراءة:</strong> ثقة عالية — تاريخ ووقت الميلاد متوفران والخريطة مكتملة.
+        <div style="margin-top:0.25rem">بيانات الميلاد: 7 يوليو 1988 — 00:15 · الرياض</div>
+      </div>
+    </div>
   </header>
 
+  <!-- Big Three Bento Row -->
   <div class="big-grid">
     
-            <div class="big-card">
-              <div class="big-label">الشمس</div>
+            <div class="bento-card big-card" style="--card-accent: #FF9F0A">
+              <div class="big-header">
+                <span class="big-label">الشمس</span>
+                <span class="big-pill">حاكمه القمر</span>
+              </div>
               <div class="big-sign">السرطان</div>
-              <div class="big-caption">جوهر الهوية</div>
+              <div class="big-caption">جوهر الهوية والإرادة</div>
             </div>
             
 
-            <div class="big-card">
-              <div class="big-label">القمر</div>
+            <div class="bento-card big-card" style="--card-accent: #0A84FF">
+              <div class="big-header">
+                <span class="big-label">القمر</span>
+                <span class="big-pill">حاكمه المريخ</span>
+              </div>
               <div class="big-sign">الحمل</div>
-              <div class="big-caption">الأمان العاطفي</div>
+              <div class="big-caption">الأمان العاطفي والاحتياج</div>
             </div>
             
 
-            <div class="big-card">
-              <div class="big-label">الطالع</div>
+            <div class="bento-card big-card" style="--card-accent: #30D158">
+              <div class="big-header">
+                <span class="big-label">الطالع</span>
+                <span class="big-pill">حاكمه المريخ</span>
+              </div>
               <div class="big-sign">الحمل</div>
-              <div class="big-caption">طريقة الظهور</div>
+              <div class="big-caption">الأسلوب المباشر وربان الخريطة</div>
             </div>
             
   </div>
 
-  <div class="note">
-    <strong>حدود القراءة:</strong> ثقة عالية — تاريخ ووقت الميلاد متوفران والخريطة مكتملة.
-    <span class="birth">بيانات الميلاد: 7 يوليو 1988 — 00:15 · الرياض</span>
-  </div>
-
-  <section>
-    <div class="section-head">
-      <h2>قراءة اليوم</h2>
-      <p>الثلاثاء 10 نوفمبر 2026</p>
-    </div>
-    <div class="report reading-card"><h1>قراءة مثال — 2026-11-10</h1>
-<h2>المفتاح</h2>
-<p>تحتاج أن تشعر بالانتماء والدفء، لكن غريزة أخرى ترفض الانتظار وتريد أن تتحرك الآن. تظهر متحفظًا ثم تكشف عمقك لمن يربح ثقتك. القراءة هنا لا تشرح خريطتك؛ إنها تحاول أن تسمع القصة التي تعيشها.</p>
-<h2>العالم الداخلي</h2>
-<p>احتياجك العاطفي الأساسي: أن يُرى ويُشجّع، وأن يجد مساحة للحركة قبل أن يُطلب منه الهدوء. قد يبدو هذا الاحتياج بسيطًا، لكنه يصبح واضحًا في اللحظات التي تشعر فيها أن أحدًا لا يرى ما تحتاجه فعلًا. حين تهدأ، اسأل: هل أطلب القرب بطريقة يمكن للآخر أن يفهمها، أم أطلب أن يخمّن؟</p>
-<h2>العالم الخارجي</h2>
-<p>كلام ورفقة خفيفة ومساحة. الحوار هو المقدمة. وعند الاحتكاك: انسحاب وجرح داخلي. اسأل بلطف ولا تفسّر الصمت كبرود. الفرق بين ما تحتاجه وما تُظهره هو غالبًا مساحة سوء الفهم. قل احتياجك قبل أن تختبره بالصمت.</p>
-<h2>الظل</h2>
-<p>الظل هنا ليس عيبًا؛ إنه الطريقة التي تحمي بها نفسك من ألم قديم. قد تخشى أن يطفئ الالتزام حماسك، فتهرب من القرار قبل أن يبدأ. راقب اللحظة التي تنسحب فيها قبل أن تشرح، أو التي تشرح فيها أكثر من حاجتك. كلاهما محاولة للسيطرة على ألم لا يحتاج سيطرة، بل حضورًا.</p>
-<h2>طاقة اليوم</h2>
-<ul>
-<li>10 نوفمبر: القمر يضغط على توسعك عبر تقابل (توتر بين طرفين). — اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.
-</li>
-<li>10 نوفمبر: القمر يسهّل طاقتك وحدودك عبر تثليث (تدفق وسهولة). — استثمر النافذة في خطوة واحدة كانت مؤجلة.
-</li>
-<li>10 نوفمبر: القمر يضغط على محور ظهورك عبر زاوية 150° (عدم توافق يحتاج تعديلًا). — اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.
-</li>
-</ul>
-<h2>الهدية</h2>
-<p>قدرتك على احتواء ما لا يُقال ومنح الآخر إحساسًا بأنه مرئي.</p>
-<h2>الرسالة</h2>
-<p>لا تحتاج أن تحل نفسك اليوم. اختر جملة واحدة صادقة تقولها لشخص آمن، وخطوة واحدة صغيرة تثبت أنك تسمع نفسك. التغيير الحقيقي غالبًا بهذا الحجم.</p>
-<blockquote>قراءة محلية مبنية على القواعد. أضف `OPENROUTER_API_KEY` لتفعيل السرد التوليدي عبر OpenRouter.</blockquote></div>
-    <div class="chips">
-      <span class="chip"><b>شخصي</b> 12 نوفمبر · زحل — حساسيتك</span>
-<span class="chip"><b>شخصي</b> 10 نوفمبر · القمر — توسعك</span>
-<span class="chip"><b>شخصي</b> 10 نوفمبر · القمر — طاقتك وحدودك</span>
-<span class="chip"><b>شخصي</b> 11 نوفمبر · الشمس — محور مسارك</span>
-    </div>
-  </section>
-
-  <details class="fold">
-    <summary>المواضع الكاملة</summary>
-    <div class="fold-body">
-      <p class="fold-note">الأبراج + البيوت بنظام whole-sign. افتح القسم فقط عند الحاجة.</p>
-      <div class="placements">
-        
-            <div class="placement">
-              <div class="placement-body">الشمس</div>
-              <div class="placement-sign">السرطان</div>
-              <div class="placement-degree">14°59′</div>
-              <div class="placement-meta"><span>مائي</span><span>البيت 4</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">القمر</div>
-              <div class="placement-sign">الحمل</div>
-              <div class="placement-degree">20°10′</div>
-              <div class="placement-meta"><span>ناري</span><span>البيت 1</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">عطارد</div>
-              <div class="placement-sign">الجوزاء</div>
-              <div class="placement-degree">23°50′</div>
-              <div class="placement-meta"><span>هوائي</span><span>البيت 3</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">الزهرة</div>
-              <div class="placement-sign">الجوزاء</div>
-              <div class="placement-degree">14°02′</div>
-              <div class="placement-meta"><span>هوائي</span><span>البيت 3</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">المريخ</div>
-              <div class="placement-sign">الحوت</div>
-              <div class="placement-degree">26°39′</div>
-              <div class="placement-meta"><span>مائي</span><span>البيت 12</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">المشتري</div>
-              <div class="placement-sign">الثور</div>
-              <div class="placement-degree">27°13′</div>
-              <div class="placement-meta"><span>ترابي</span><span>البيت 2</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">زحل</div>
-              <div class="placement-sign">القوس</div>
-              <div class="placement-degree">28°04′</div>
-              <div class="placement-meta"><span>ناري</span><span>البيت 9</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">أورانوس</div>
-              <div class="placement-sign">القوس</div>
-              <div class="placement-degree">28°23′</div>
-              <div class="placement-meta"><span>ناري</span><span>البيت 9</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">نبتون</div>
-              <div class="placement-sign">الجدي</div>
-              <div class="placement-degree">8°38′</div>
-              <div class="placement-meta"><span>ترابي</span><span>البيت 10</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">بلوتو</div>
-              <div class="placement-sign">العقرب</div>
-              <div class="placement-degree">9°49′</div>
-              <div class="placement-meta"><span>مائي</span><span>البيت 8</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">العقدة الشمالية</div>
-              <div class="placement-sign">الحوت</div>
-              <div class="placement-degree">16°08′</div>
-              <div class="placement-meta"><span>مائي</span><span>البيت 12</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">الطالع</div>
-              <div class="placement-sign">الحمل</div>
-              <div class="placement-degree">27°22′</div>
-              <div class="placement-meta"><span>ناري</span><span>بدون بيت</span></div>
-            </div>
-            
-
-            <div class="placement">
-              <div class="placement-body">وسط السماء</div>
-              <div class="placement-sign">الجدي</div>
-              <div class="placement-degree">18°55′</div>
-              <div class="placement-meta"><span>ترابي</span><span>بدون بيت</span></div>
-            </div>
-            
+  <!-- Primary Interactive Reading Hub (Daily / Weekly / Monthly / Story) -->
+  <section id="readings">
+    <div class="reading-hub-bar">
+      <div>
+        <h2>القراءات الذكية — اليوم · الأسبوع · الشهر</h2>
+        <p>مصممة لتكون خفيفة، سريعة الفهم، وشاملة لكل نواحي حياتك اليومية</p>
+      </div>
+      <div class="tabs" role="tablist" aria-label="تبديل القراءة">
+        <button class="tab active" data-panel="daily" role="tab" aria-selected="true">قراءة اليوم</button>
+        <button class="tab" data-panel="weekly" role="tab" aria-selected="false">موجز الأسبوع</button>
+        <button class="tab" data-panel="monthly" role="tab" aria-selected="false">الدليل الشهري</button>
+        <button class="tab" data-panel="story" role="tab" aria-selected="false">القراءة التأملية</button>
       </div>
     </div>
-  </details>
 
-  <details class="fold">
-    <summary>التقارير الكاملة</summary>
-    <div class="fold-body">
-      <p class="fold-note">نفس المخرجات التي تُرفع كـ Artifacts في GitHub Actions.</p>
-      <div class="tabs" role="tablist">
-        <button class="tab active" data-panel="daily" role="tab">اليوم</button>
-        <button class="tab" data-panel="weekly" role="tab">الأسبوع</button>
-        <button class="tab" data-panel="monthly" role="tab">الشهر</button>
-      </div>
-      <div class="panel active" id="daily"><div class="report"><h1>بطاقة اليوم — الثلاثاء 10 نوفمبر 2026</h1>
+    <div class="panel active" id="daily">
+      <div class="report reading-card"><h1>بطاقة اليوم — الثلاثاء 10 نوفمبر 2026</h1>
+<p><strong>طور القمر اليوم (Rudhyar):</strong> المحاق الوليد — طور البذرة (1% إضاءة) — بداية دورة جديدة؛ الطاقة تتجه للداخل لتحديد النية قبل الظهور.</p>
 <p><strong>الجو العام:</strong> زحل يضغط على حساسيتك عبر تربيع (احتكاك يدفع للتعديل).</p>
-<p><strong>افعل:</strong> اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم. <strong>تجنّب:</strong> لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</p>
+<p><strong>افعل:</strong> تحقق من الأرقام والمواعيد المكتوبة، وامنح ذهنك وقتًا بعيدًا عن الضجيج. <strong>تجنّب:</strong> لا تبنِ التزامًا ماليًا أو عاطفيًا على انطباع غامض غير مؤكد.</p>
+<h2>بوصلة النواحي الأربع</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>الناحية</th>
+<th>المؤشر</th>
+<th>الخلاصة العملية</th>
+<th>خطوة سريعة</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>العمل والقرار</strong></td>
+<td>تدفق داعم (90%)</td>
+<td>القمر يسهّل طاقتك وحدودك عبر تثليث (تدفق وسهولة).</td>
+<td>احسم المهمة الأصعب في جدولك الآن؛ شجاعتك العملية في ذروتها.</td>
+</tr>
+<tr>
+<td><strong>المال والأولويات</strong></td>
+<td>يتطلب تروّيًا (68%)</td>
+<td>القمر يضغط على توسعك عبر تقابل (توتر بين طرفين).</td>
+<td>رحّب بالفرص لكن ضع لها سقفًا واضحًا من الوقت والميزانية.</td>
+</tr>
+<tr>
+<td><strong>العلاقات والبيت</strong></td>
+<td>يتطلب تروّيًا (70%)</td>
+<td>القمر يلامس قمرك: مزاج متغير واحتياج واضح للراحة.</td>
+<td>خفّف الجدول، واشرب ماءً ونم مبكرًا.</td>
+</tr>
+<tr>
+<td><strong>الطاقة والاتزان</strong></td>
+<td>يتطلب تروّيًا (64%)</td>
+<td>بداية دورة جديدة؛ الطاقة تتجه للداخل لتحديد النية قبل الظهور.</td>
+<td>خفّف المنبهات، وامنح جسدك نومًا مبكرًا لتجديد المخزون.</td>
+</tr>
+</tbody></table></div>
 <p><strong>نافذة اليوم:</strong> نافذة 10 نوفمبر 05:01 — القمر يسهّل طاقتك وحدودك عبر تثليث (تدفق وسهولة). <strong>احذر:</strong> احذر 10 نوفمبر 06:08 — القمر يضغط على توسعك عبر تقابل (توتر بين طرفين).</p>
-<blockquote>ثقة القراءة: عالية — بيانات الميلاد والوقت مكتملة.</blockquote></div></div>
-      <div class="panel" id="weekly"><div class="report"><h1>موجز الأسبوع — 8 نوفمبر إلى 14 نوفمبر 2026</h1>
-<p><strong>القمر هذا الأسبوع:</strong> تغيّرات القمر: 8 نوفمبر 01:39 → العقرب، 10 نوفمبر 11:35 → القوس، 12 نوفمبر 23:27 → الجدي</p>
+<blockquote>ثقة القراءة: عالية — بيانات الميلاد والوقت مكتملة.</blockquote></div>
+    </div>
+    <div class="panel" id="weekly">
+      <div class="report reading-card"><h1>موجز الأسبوع — 8 نوفمبر إلى 14 نوفمبر 2026</h1>
+<p><strong>القمر هذا الأسبوع:</strong> تغيّرات القمر: 8 نوفمبر 01:39 → العقرب، 10 نوفمبر 11:35 → القوس، 12 نوفمبر 23:27 → الجدي <strong>إيقاع الدورة القمرية:</strong> المحاق الوليد — طور البذرة — بداية دورة جديدة؛ الطاقة تتجه للداخل لتحديد النية قبل الظهور. <strong>عدسة النسر والقبرة (Brady):</strong> النسر (الاتجاه الأوسع): زحل يضغط على حساسيتك عبر تربيع (احتكاك يدفع للتعديل). · القبرة (النبض اليومي): القمر يضغط على تواصلك عبر تقابل (توتر بين طرفين).</p>
+<h2>بوصلة النواحي الأربع</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>الناحية</th>
+<th>المؤشر</th>
+<th>الخلاصة العملية</th>
+<th>خطوة سريعة</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>العمل والقرار</strong></td>
+<td>يتطلب تروّيًا (66%)</td>
+<td>القمر يضغط على تواصلك عبر تقابل (توتر بين طرفين).</td>
+<td>اكتب النقاط الأساسية قبل أي نقاش، واطلب توضيحًا بدل افتراض النية.</td>
+</tr>
+<tr>
+<td><strong>المال والأولويات</strong></td>
+<td>تدفق داعم (92%)</td>
+<td>المريخ يلامس عطاردك: حدة في الكلام وسرعة في الرد.</td>
+<td>خفّض نبرتك درجة واحدة قبل الرد.</td>
+</tr>
+<tr>
+<td><strong>العلاقات والبيت</strong></td>
+<td>تدفق داعم (92%)</td>
+<td>القمر يلامس قمرك: مزاج متغير واحتياج واضح للراحة.</td>
+<td>خفّف الجدول، واشرب ماءً ونم مبكرًا.</td>
+</tr>
+<tr>
+<td><strong>الطاقة والاتزان</strong></td>
+<td>يتطلب تروّيًا (64%)</td>
+<td>بداية دورة جديدة؛ الطاقة تتجه للداخل لتحديد النية قبل الظهور.</td>
+<td>خفّف المنبهات، وامنح جسدك نومًا مبكرًا لتجديد المخزون.</td>
+</tr>
+</tbody></table></div>
 <h2>طقسك الشخصي</h2>
 <ul>
 <li><strong>القمر — تواصلك</strong> — القمر يضغط على تواصلك عبر تقابل (توتر بين طرفين).
 <ul class="sublist">
-<li>افعل: اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.</li>
-<li>تجنّب: لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</li>
+<li>افعل: اكتب النقاط الأساسية قبل أي نقاش، واطلب توضيحًا بدل افتراض النية.</li>
+<li>تجنّب: لا ترسل ردًا سريعًا في لحظة انفعال أو تتشتت بين خمس مهام معًا.</li>
 </ul>
 </li>
 <li><strong>الزهرة — تواصلك</strong> — الزهرة تفتح فرصة في تواصلك عبر تثليث (تدفق وسهولة).
 <ul class="sublist">
-<li>افعل: ابدأ أنت؛ المبادرة ستُقابل بترحيب.</li>
-<li>تجنّب: لا تنتظر الإشارة المثالية.</li>
+<li>افعل: رتّب أوراقك، أنهِ المراسلات المؤجلة، أو افتح حوارًا يحتاج صياغة ذكية.</li>
+<li>تجنّب: لا تترك الأفكار الجيدة دون تدوين أو خطوة تنفيذية.</li>
 </ul>
 </li>
 <li><strong>القمر — محور مسارك</strong> — القمر يلامس محور مسارك عبر اقتران (دمج مباشر).
 <ul class="sublist">
-<li>افعل: راقب ولا تُصدر حكمًا سريعًا.</li>
-<li>تجنّب: لا تبالغ في قراءة الأمور.</li>
+<li>افعل: خطوة مهنية واضحة أو تواصل مع صاحب قرار يعزز مكانتك ومسارك.</li>
+<li>تجنّب: لا تؤجل إبراز إنجازك الفعلي.</li>
 </ul>
 </li>
 </ul>
@@ -535,11 +1168,13 @@
 </ul>
 <h2>قرار واحد هذا الأسبوع</h2>
 <ul>
-<li>اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.
+<li>اكتب النقاط الأساسية قبل أي نقاش، واطلب توضيحًا بدل افتراض النية.
 </li>
 </ul>
-<blockquote>ثقة القراءة: عالية — بيانات الميلاد والوقت مكتملة.</blockquote></div></div>
-      <div class="panel" id="monthly"><div class="report"><h1>الدليل الشهري — 1 نوفمبر إلى 30 نوفمبر 2026</h1>
+<blockquote>ثقة القراءة: عالية — بيانات الميلاد والوقت مكتملة.</blockquote></div>
+    </div>
+    <div class="panel" id="monthly">
+      <div class="report reading-card"><h1>الدليل الشهري — 1 نوفمبر إلى 30 نوفمبر 2026</h1>
 <p><strong>القمر خلال الشهر:</strong> تغيّرات القمر:</p>
 <ul>
 <li>1 نوفمبر 07:18 → الأسد
@@ -571,30 +1206,70 @@
 <li>30 نوفمبر 17:12 → العذراء
 </li>
 </ul>
+<h2>الجذور الكلاسيكية للشهر</h2>
+<ul>
+<li><strong>الحيز الفلكي (George &amp; Brennan):</strong> خريطتك ليلية: الحدس العاطفي، جودة الروابط، والشجاعة الغريزية (القمر والزهرة) هي مصدر قوتك؛ تنجح حين تثق بإحساسك الأول وتحمي مساحتك الآمنة.
+</li>
+<li><strong>انتهاء السنة وحاكم الزمن (Valens):</strong> سنة البيت 3 (التواصل والتعلم) في برج الجوزاء — حاكم سنتك الفلكية هو <strong>عطارد</strong>: التركيز الأعمق هذا العام يدور حول الحوار اليومي، العقود القصيرة، الكتابة، والتنقل الذهني.
+</li>
+</ul>
+<h2>بوصلة النواحي الأربع</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>الناحية</th>
+<th>المؤشر</th>
+<th>الخلاصة العملية</th>
+<th>خطوة سريعة</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>العمل والقرار</strong></td>
+<td>يتطلب تروّيًا (66%)</td>
+<td>القمر يضغط على هويتك عبر تربيع (احتكاك يدفع للتعديل).</td>
+<td>ركّز طاقتك في مهمة أساسية واحدة تعبّر عن قصدك، وخفّف استعراض القوة.</td>
+</tr>
+<tr>
+<td><strong>المال والأولويات</strong></td>
+<td>يتطلب تروّيًا (68%)</td>
+<td>القمر يضغط على تواصلك عبر تقابل (توتر بين طرفين).</td>
+<td>اكتب النقاط الأساسية قبل أي نقاش، واطلب توضيحًا بدل افتراض النية.</td>
+</tr>
+<tr>
+<td><strong>العلاقات والبيت</strong></td>
+<td>تدفق داعم (92%)</td>
+<td>القمر يلامس قمرك: مزاج متغير واحتياج واضح للراحة.</td>
+<td>خفّف الجدول، واشرب ماءً ونم مبكرًا.</td>
+</tr>
+<tr>
+<td><strong>الطاقة والاتزان</strong></td>
+<td>يتطلب تروّيًا (64%)</td>
+<td>بداية دورة جديدة؛ الطاقة تتجه للداخل لتحديد النية قبل الظهور.</td>
+<td>خفّف المنبهات، وامنح جسدك نومًا مبكرًا لتجديد المخزون.</td>
+</tr>
+</tbody></table></div>
 <h2>الخط العام للشهر</h2>
 <ul>
 <li><strong>القمر — هويتك</strong> — القمر يضغط على هويتك عبر تربيع (احتكاك يدفع للتعديل).
 <ul class="sublist">
-<li>افعل: اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.</li>
-<li>تجنّب: لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</li>
+<li>افعل: ركّز طاقتك في مهمة أساسية واحدة تعبّر عن قصدك، وخفّف استعراض القوة.</li>
+<li>تجنّب: لا تدخل صراع هيبة أو تستنزف نفسك لإثبات حضورك.</li>
 </ul>
 </li>
 <li><strong>الزهرة — محور ظهورك</strong> — الزهرة تضغط على محور ظهورك عبر تقابل (توتر بين طرفين).
 <ul class="sublist">
-<li>افعل: اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.</li>
-<li>تجنّب: لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</li>
+<li>افعل: تمهّل في انطباعك الأول، واضبط إيقاع جسدك وتنفسك قبل الرد.</li>
+<li>تجنّب: لا تحمل توتر المحيط على كتفيك.</li>
 </ul>
 </li>
 <li><strong>القمر — طاقتك وحدودك</strong> — القمر يضغط على طاقتك وحدودك عبر تقابل (توتر بين طرفين).
 <ul class="sublist">
-<li>افعل: اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.</li>
-<li>تجنّب: لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</li>
+<li>افعل: وجّه فائض الطاقة إلى إنجاز عملي محدد أو حركة بدنية قبل أي تفاوض.</li>
+<li>تجنّب: لا تحوّل الاستعجال إلى صدام مباشر أو تكسر إيقاعك الطبيعي.</li>
 </ul>
 </li>
 <li><strong>القمر — تواصلك</strong> — القمر يضغط على تواصلك عبر تقابل (توتر بين طرفين).
 <ul class="sublist">
-<li>افعل: اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.</li>
-<li>تجنّب: لا تتخذ قرارًا دائمًا وأنت تحت الضغط.</li>
+<li>افعل: اكتب النقاط الأساسية قبل أي نقاش، واطلب توضيحًا بدل افتراض النية.</li>
+<li>تجنّب: لا ترسل ردًا سريعًا في لحظة انفعال أو تتشتت بين خمس مهام معًا.</li>
 </ul>
 </li>
 </ul>
@@ -620,29 +1295,878 @@
 </ul>
 <h2>توصية الشهر</h2>
 <ul>
-<li>اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.
+<li>ركّز طاقتك في مهمة أساسية واحدة تعبّر عن قصدك، وخفّف استعراض القوة.
 </li>
 </ul>
-<blockquote>ثقة القراءة: عالية — بيانات الميلاد والوقت مكتملة.</blockquote></div></div>
+<blockquote>ثقة القراءة: عالية — بيانات الميلاد والوقت مكتملة.</blockquote></div>
+    </div>
+    <div class="panel" id="story">
+      <div class="report reading-card"><h1>قراءة مثال — 2026-11-10</h1>
+<h2>المفتاح</h2>
+<p>تحتاج أن تشعر بالانتماء والدفء، لكن غريزة أخرى ترفض الانتظار وتريد أن تتحرك الآن. تظهر متحفظًا ثم تكشف عمقك لمن يربح ثقتك. المحاق الوليد — طور البذرة: بداية دورة جديدة؛ الطاقة تتجه للداخل لتحديد النية قبل الظهور. القراءة هنا تجمع بين حكمة المدرسة الكلاسيكية وعمق التحليل النفسي لتمنحك بوصلة خفيفة وعملية ليومك.</p>
+<h2>العالم الداخلي</h2>
+<p>احتياجك العاطفي الأساسي: أن يُرى ويُشجّع، وأن يجد مساحة للحركة قبل أن يُطلب منه الهدوء. خريطتك ليلية: الحدس العاطفي، جودة الروابط، والشجاعة الغريزية (القمر والزهرة) هي مصدر قوتك؛ تنجح حين تثق بإحساسك الأول وتحمي مساحتك الآمنة. حين تهدأ، اسأل نفسك: هل أعبّر عن حاجتي للأمان بلغة مباشرة يفهمها من حولي، أم أنتظر أن يلتقطوا الإشارة وحدهم؟</p>
+<h2>العالم الخارجي</h2>
+<p>كلام ورفقة خفيفة ومساحة. الحوار هو المقدمة. وعند الاحتكاك: انسحاب وجرح داخلي. اسأل بلطف ولا تفسّر الصمت كبرود. الباب الأهم في مرحلتك الحالية هو «التواصل والتعلم»: الحوار اليومي، العقود القصيرة، الكتابة، والتنقل الذهني. الفرق بين ما تحتاجه في داخلك وما تُظهره للخارج هو المساحة التي تحتاج منك كلمة واضحة ومبادرة هادئة.</p>
+<h2>الظل</h2>
+<p>الظل هنا ليس عيبًا؛ إنه الطريقة التي تحمي بها نفسك من ألم قديم. قد تخشى أن يطفئ الالتزام حماسك، فتهرب من القرار قبل أن يبدأ. راقب اللحظة التي تنسحب فيها قبل أن تشرح، أو التي تشرح فيها أكثر من حاجتك. كلاهما محاولة للسيطرة على ألم لا يحتاج سيطرة، بل حضورًا.</p>
+<h2>طاقة اليوم</h2>
+<ul>
+<li>10 نوفمبر: القمر يضغط على توسعك عبر تقابل (توتر بين طرفين). — رحّب بالفرص لكن ضع لها سقفًا واضحًا من الوقت وهذا المسارية.
+</li>
+<li>10 نوفمبر: القمر يسهّل طاقتك وحدودك عبر تثليث (تدفق وسهولة). — احسم المهمة الأصعب في جدولك الآن؛ شجاعتك العملية في ذروتها.
+</li>
+<li>10 نوفمبر: القمر يضغط على محور ظهورك عبر زاوية 150° (عدم توافق يحتاج تعديلًا). — تمهّل في انطباعك الأول، واضبط إيقاع جسدك وتنفسك قبل الرد.
+</li>
+</ul>
+<h2>بوصلة النواحي العملية</h2>
+<ul>
+<li><strong>العمل والقرار (تدفق داعم):</strong> افعل: احسم المهمة الأصعب في جدولك الآن؛ شجاعتك العملية في ذروتها. | تجنّب: لا تبعثر هذا الزخم في معارك صغيرة لا تخدم هدفك.
+</li>
+<li><strong>المال والأولويات (يتطلب تروّيًا):</strong> افعل: رحّب بالفرص لكن ضع لها سقفًا واضحًا من الوقت وهذا المسارية. | تجنّب: لا تفرط في الوعود أو تفتح التزامات تفوق سعة يومك.
+</li>
+<li><strong>العلاقات والبيت (يتطلب تروّيًا):</strong> افعل: خفّف الجدول، واشرب ماءً ونم مبكرًا. | تجنّب: لا تتخذ قرارًا عاطفيًا في ذروة التغير.
+</li>
+<li><strong>الطاقة والاتزان (يتطلب تروّيًا):</strong> افعل: خفّف المنبهات، وامنح جسدك نومًا مبكرًا لتجديد المخزون. | تجنّب: لا تبنِ التزامًا ماليًا أو عاطفيًا على انطباع غامض غير مؤكد.
+</li>
+</ul>
+<h2>الهدية</h2>
+<p>قدرتك على احتواء ما لا يُقال ومنح الآخر إحساسًا بأنه مرئي.</p>
+<h2>الرسالة</h2>
+<p>لا تحتاج أن تحل نفسك اليوم. اختر جملة واحدة صادقة تقولها لشخص آمن، وخطوة واحدة صغيرة تثبت أنك تسمع نفسك. التغيير الحقيقي غالبًا بهذا الحجم.</p></div>
+    </div>
+
+    <div class="chips">
+      <span class="chip" style="--chip-color: #FF453A"><span class="chip-dot"></span><b>شخصي</b> 12 نوفمبر · زحل — حساسيتك</span>
+<span class="chip" style="--chip-color: #FF453A"><span class="chip-dot"></span><b>شخصي</b> 10 نوفمبر · القمر — توسعك</span>
+<span class="chip" style="--chip-color: #30D158"><span class="chip-dot"></span><b>شخصي</b> 10 نوفمبر · القمر — طاقتك وحدودك</span>
+<span class="chip" style="--chip-color: #30D158"><span class="chip-dot"></span><b>شخصي</b> 11 نوفمبر · الشمس — محور مسارك</span>
+<span class="chip" style="--chip-color: #30D158"><span class="chip-dot"></span><b>شخصي</b> 11 نوفمبر · المريخ — تواصلك</span>
+    </div>
+  </section>
+
+  <!-- 4 Life-Domains Bento Compass -->
+  <section id="compass">
+    <div class="section-head">
+      <h2>بوصلة النواحي الأربع الشاملة</h2>
+      <p>خلاصة تطبيقية خفيفة للعمل، المال، العلاقات، والطاقة اليومية</p>
+    </div>
+    <div class="domains-grid">
+      
+            <article class="bento-card domain-card" style="--card-accent: #FF9F0A">
+              <div class="domain-head">
+                <div>
+                  <span class="domain-kicker">تدفق داعم</span>
+                  <h3 class="domain-title">العمل والقرار</h3>
+                </div>
+                <div class="domain-ring" aria-label="90%">
+                  <span>90%</span>
+                </div>
+              </div>
+              <div class="domain-bar"><div class="domain-bar-fill" style="width: 90%"></div></div>
+              <p class="domain-headline">القمر يسهّل طاقتك وحدودك عبر تثليث (تدفق وسهولة).</p>
+              <div class="domain-actions">
+                <div class="action-row do-row">
+                  <span class="action-tag do-tag">افعل</span>
+                  <span>احسم المهمة الأصعب في جدولك الآن؛ شجاعتك العملية في ذروتها.</span>
+                </div>
+                <div class="action-row avoid-row">
+                  <span class="action-tag avoid-tag">تجنّب</span>
+                  <span>لا تبعثر هذا الزخم في معارك صغيرة لا تخدم هدفك.</span>
+                </div>
+              </div>
+            </article>
+            
+
+            <article class="bento-card domain-card" style="--card-accent: #30D158">
+              <div class="domain-head">
+                <div>
+                  <span class="domain-kicker">يتطلب تروّيًا</span>
+                  <h3 class="domain-title">المال والأولويات</h3>
+                </div>
+                <div class="domain-ring" aria-label="68%">
+                  <span>68%</span>
+                </div>
+              </div>
+              <div class="domain-bar"><div class="domain-bar-fill" style="width: 68%"></div></div>
+              <p class="domain-headline">القمر يضغط على توسعك عبر تقابل (توتر بين طرفين).</p>
+              <div class="domain-actions">
+                <div class="action-row do-row">
+                  <span class="action-tag do-tag">افعل</span>
+                  <span>رحّب بالفرص لكن ضع لها سقفًا واضحًا من الوقت والميزانية.</span>
+                </div>
+                <div class="action-row avoid-row">
+                  <span class="action-tag avoid-tag">تجنّب</span>
+                  <span>لا تفرط في الوعود أو تفتح التزامات تفوق سعة يومك.</span>
+                </div>
+              </div>
+            </article>
+            
+
+            <article class="bento-card domain-card" style="--card-accent: #0A84FF">
+              <div class="domain-head">
+                <div>
+                  <span class="domain-kicker">يتطلب تروّيًا</span>
+                  <h3 class="domain-title">العلاقات والبيت</h3>
+                </div>
+                <div class="domain-ring" aria-label="70%">
+                  <span>70%</span>
+                </div>
+              </div>
+              <div class="domain-bar"><div class="domain-bar-fill" style="width: 70%"></div></div>
+              <p class="domain-headline">القمر يلامس قمرك: مزاج متغير واحتياج واضح للراحة.</p>
+              <div class="domain-actions">
+                <div class="action-row do-row">
+                  <span class="action-tag do-tag">افعل</span>
+                  <span>خفّف الجدول، واشرب ماءً ونم مبكرًا.</span>
+                </div>
+                <div class="action-row avoid-row">
+                  <span class="action-tag avoid-tag">تجنّب</span>
+                  <span>لا تتخذ قرارًا عاطفيًا في ذروة التغير.</span>
+                </div>
+              </div>
+            </article>
+            
+
+            <article class="bento-card domain-card" style="--card-accent: #FF453A">
+              <div class="domain-head">
+                <div>
+                  <span class="domain-kicker">يتطلب تروّيًا</span>
+                  <h3 class="domain-title">الطاقة والاتزان</h3>
+                </div>
+                <div class="domain-ring" aria-label="64%">
+                  <span>64%</span>
+                </div>
+              </div>
+              <div class="domain-bar"><div class="domain-bar-fill" style="width: 64%"></div></div>
+              <p class="domain-headline">بداية دورة جديدة؛ الطاقة تتجه للداخل لتحديد النية قبل الظهور.</p>
+              <div class="domain-actions">
+                <div class="action-row do-row">
+                  <span class="action-tag do-tag">افعل</span>
+                  <span>خفّف المنبهات، وامنح جسدك نومًا مبكرًا لتجديد المخزون.</span>
+                </div>
+                <div class="action-row avoid-row">
+                  <span class="action-tag avoid-tag">تجنّب</span>
+                  <span>لا تبنِ التزامًا ماليًا أو عاطفيًا على انطباع غامض غير مؤكد.</span>
+                </div>
+              </div>
+            </article>
+            
+    </div>
+  </section>
+
+  <!-- Interactive Astrological Charts Bento (Auto-redraws on Theme Switch) -->
+  <section id="charts">
+    <div class="section-head">
+      <h2>المخططات الفلكية الحية</h2>
+      <p>تُعاد رسمها تلقائيًا عند التبديل بين Pro Dark Titanium و Apple Daylight Silver</p>
+    </div>
+    <div class="charts-bento-grid">
+      <div class="bento-card chart-box" style="--card-accent: #0A84FF">
+        <div class="chart-box-head">
+          <h3>دائرة البروج والعبورات الفعالة</h3>
+          <span class="mini-pill" style="--pill-color: #0A84FF">Whole-Sign / Ecliptic</span>
+        </div>
+        <canvas id="wheelCanvas" class="astro-canvas" width="440" height="440"></canvas>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-swatch" style="background:#30D158"></span> تدفق ودعم</span>
+          <span class="legend-item"><span class="legend-swatch" style="background:#0A84FF"></span> فرصة وتواصل</span>
+          <span class="legend-item"><span class="legend-swatch" style="background:#FF9F0A"></span> حيوية وقرار</span>
+          <span class="legend-item"><span class="legend-swatch" style="background:#FF453A"></span> تقاطع يحتاج هدوءًا</span>
+        </div>
+      </div>
+
+      <div class="bento-card chart-box" style="--card-accent: #30D158">
+        <div class="chart-box-head">
+          <h3>توازن النواحي الأربع والعناصر</h3>
+          <span class="mini-pill" style="--pill-color: #30D158">مؤشر الاتزان الحي</span>
+        </div>
+        <canvas id="radarCanvas" class="astro-canvas" width="440" height="440"></canvas>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-swatch" style="background:#FF9F0A"></span> العمل</span>
+          <span class="legend-item"><span class="legend-swatch" style="background:#30D158"></span> المال</span>
+          <span class="legend-item"><span class="legend-swatch" style="background:#0A84FF"></span> العلاقات</span>
+          <span class="legend-item"><span class="legend-swatch" style="background:#FF453A"></span> الطاقة</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Classical Pillars Trio (Rudhyar, Valens/Brennan, George) -->
+  <section id="classical">
+    <div class="section-head">
+      <h2>المرتكزات الكلاسيكية النشطة</h2>
+      <p>قراءة الحيز الفلكي، حاكم السنة، والدورة القمرية</p>
+    </div>
+    <div class="classical-grid">
+      
+    <article class="bento-card classical-card" style="--card-accent: #0A84FF">
+      <div class="card-kicker">Dane Rudhyar · The Lunation Cycle</div>
+      <h3>المحاق الوليد — طور البذرة</h3>
+      <p>بداية دورة جديدة؛ الطاقة تتجه للداخل لتحديد النية قبل الظهور.</p>
+      <div class="classical-pills">
+        <span class="mini-pill" style="--pill-color: #0A84FF">زاوية القمر والشمس: 12.2°</span>
+        <span class="mini-pill" style="--pill-color: #30D158">نسبة الإضاءة: 1%</span>
+      </div>
+    </article>
+
+    <article class="bento-card classical-card" style="--card-accent: #FF9F0A">
+      <div class="card-kicker">Vettius Valens & Chris Brennan · Time-Lord</div>
+      <h3>حاكم السنة: عطارد · البيت 3 (التواصل والتعلم)</h3>
+      <p>يفعّل برج <strong>الجوزاء</strong> محور الحوار اليومي، العقود القصيرة، الكتابة، والتنقل الذهني.</p>
+      <div class="classical-pills">
+        <span class="mini-pill" style="--pill-color: #FF9F0A">عدسة النسر الكبرى: 0 إشارات</span>
+        <span class="mini-pill" style="--pill-color: #30D158">نبض القبرة اليومي: 12 إشارات</span>
+      </div>
+    </article>
+
+    <article class="bento-card classical-card" style="--card-accent: #30D158">
+      <div class="card-kicker">Demetra George · Authentic Self & Sect</div>
+      <h3>خريطة ليلية (Nocturnal Sect)</h3>
+      <p>خريطتك ليلية: الحدس العاطفي، جودة الروابط، والشجاعة الغريزية (القمر والزهرة) هي مصدر قوتك؛ تنجح حين تثق بإحساسك الأول وتحمي مساحتك الآمنة.</p>
+      
+        <div class="classical-pills">
+          <span class="mini-pill" style="--pill-color: #30D158">سهم السعادة: السرطان (حاكمه القمر)</span>
+          <span class="mini-pill" style="--pill-color: #0A84FF">سهم الروح: الدلو (حاكمه زحل)</span>
+        </div>
+        
+    </article>
+    
+    </div>
+  </section>
+
+  <!-- The 10 Foundational Astrology Books Shelf -->
+  <section id="books">
+    <div class="section-head">
+      <h2>الكتب العشرة المؤسسة للقراءة</h2>
+      <p>كيف تُترجم أمهات كتب التنجيم الكلاسيكي والحديث خريطتك اليوم بلغة واضحة</p>
+    </div>
+    <div class="books-grid">
+      
+            <article class="bento-card book-card" style="--card-accent: #0A84FF">
+              <div class="book-head">
+                <span class="book-num">01</span>
+                <span class="book-author">Demetra George</span>
+              </div>
+              <h3 class="book-title" dir="ltr">Astrology and the Authentic Self</h3>
+              <div class="book-concept">الذات الأصيلة والحيز الفلكي (Sect)</div>
+              <p class="book-insight">خريطتك ليلية: الحدس العاطفي، جودة الروابط، والشجاعة الغريزية (القمر والزهرة) هي مصدر قوتك؛ تنجح حين تثق بإحساسك الأول وتحمي مساحتك الآمنة.</p>
+            </article>
+            
+
+            <article class="bento-card book-card" style="--card-accent: #FF453A">
+              <div class="book-head">
+                <span class="book-num">02</span>
+                <span class="book-author">Liz Greene</span>
+              </div>
+              <h3 class="book-title" dir="ltr">Astrology of Fate</h3>
+              <div class="book-concept">القدر والظل والتحول النفسي (Moira &amp; Shadow)</div>
+              <p class="book-insight">موضع الانضباط (ناري) يكشف أن ما يبدو عائقًا متكررًا هو في الحقيقة بوابتك للنضج حين تتوقف عن مقاومته بصمت وتواجهه بوعي.</p>
+            </article>
+            
+
+            <article class="bento-card book-card" style="--card-accent: #FF9F0A">
+              <div class="book-head">
+                <span class="book-num">03</span>
+                <span class="book-author">Vettius Valens (tr. Mark Riley)</span>
+              </div>
+              <h3 class="book-title" dir="ltr">The Anthology</h3>
+              <div class="book-concept">أرباب الزمان وانتهاءات السنين (Chronocrators)</div>
+              <p class="book-insight">سنة البيت 3 (التواصل والتعلم) في برج الجوزاء — حاكم سنتك الفلكية هو عطارد: التركيز الأعمق هذا العام يدور حول الحوار اليومي، العقود القصيرة، الكتابة، والتنقل الذهني.</p>
+            </article>
+            
+
+            <article class="bento-card book-card" style="--card-accent: #30D158">
+              <div class="book-head">
+                <span class="book-num">04</span>
+                <span class="book-author">Robert Hand</span>
+              </div>
+              <h3 class="book-title" dir="ltr">Horoscope Symbols</h3>
+              <div class="book-concept">الرموز الفلكية كحقول طاقة حية</div>
+              <p class="book-insight">كل عبور ليس حدثًا مفروضًا عليك، بل طاقة خام يمكنك اختيار تعبيرها الأرقى عبر الفعل الواعي بدل رد الفعل التلقائي.</p>
+            </article>
+            
+
+            <article class="bento-card book-card" style="--card-accent: #30D158">
+              <div class="book-head">
+                <span class="book-num">05</span>
+                <span class="book-author">Joy Usher</span>
+              </div>
+              <h3 class="book-title" dir="ltr">A Tiny Universe&#x27;s Companion</h3>
+              <div class="book-concept">التوازن اليومي للعناصر الأربعة</div>
+              <p class="book-insight">الجمع بين طابع الجوهر (مائي) واحتياج الداخل (ناري) يطلب منك توزيع يومك بين الإنجاز الملموس ووقت الاستشفاء الشخصي.</p>
+            </article>
+            
+
+            <article class="bento-card book-card" style="--card-accent: #0A84FF">
+              <div class="book-head">
+                <span class="book-num">06</span>
+                <span class="book-author">Chris Brennan</span>
+              </div>
+              <h3 class="book-title" dir="ltr">Hellenistic Astrology</h3>
+              <div class="book-concept">نظام البيوت الكاملة والسهام الهلنستية</div>
+              <p class="book-insight">تركيز المرحلة الحالية يفعّل محور «التواصل والتعلم»؛ الخطوات الصغيرة في هذا الباب تعطي أثرًا مضاعفًا.</p>
+            </article>
+            
+
+            <article class="bento-card book-card" style="--card-accent: #0A84FF">
+              <div class="book-head">
+                <span class="book-num">07</span>
+                <span class="book-author">Dane Rudhyar</span>
+              </div>
+              <h3 class="book-title" dir="ltr">The Lunation Cycle</h3>
+              <div class="book-concept">الدورة القمرية الثمانية (Soli-Lunar Rhythm)</div>
+              <p class="book-insight">المحاق الوليد — طور البذرة (12.2°): بداية دورة جديدة؛ الطاقة تتجه للداخل لتحديد النية قبل الظهور.</p>
+            </article>
+            
+
+            <article class="bento-card book-card" style="--card-accent: #FF9F0A">
+              <div class="book-head">
+                <span class="book-num">08</span>
+                <span class="book-author">Bernadette Brady</span>
+              </div>
+              <h3 class="book-title" dir="ltr">Predictive Astrology: The Eagle and the Lark</h3>
+              <div class="book-concept">نظرة النسر الكبرى وأغنية القبرة اليومية</div>
+              <p class="book-insight">النسر (الإطار العام): الدورات الكبرى تدعوك لتثبيت الأساس الهيكلي بهدوء وثبات. | القبرة (نبض اليوم): القمر يضغط على هويتك عبر تربيع (احتكاك يدفع للتعديل).</p>
+            </article>
+            
+
+            <article class="bento-card book-card" style="--card-accent: #FF9F0A">
+              <div class="book-head">
+                <span class="book-num">09</span>
+                <span class="book-author">Aleister Crowley</span>
+              </div>
+              <h3 class="book-title" dir="ltr">The Complete Astrological Writings</h3>
+              <div class="book-concept">الإرادة الحقة وتوجيه القوة الكوكبية</div>
+              <p class="book-insight">قوة الخريطة تظهر حين تقود طاقتك نحو هدف واحد واضح تختاره بإرادتك، دون تبديدها في معارك جانبية.</p>
+            </article>
+            
+
+            <article class="bento-card book-card" style="--card-accent: #30D158">
+              <div class="book-head">
+                <span class="book-num">10</span>
+                <span class="book-author">Demetra George</span>
+              </div>
+              <h3 class="book-title" dir="ltr">Ancient Astrology in Theory and Practice Vol. 1 &amp; 2</h3>
+              <div class="book-concept">حالة الكواكب وجودة الأداء العملي</div>
+              <p class="book-insight">النير القائد في خريطتك (القمر) والسعد الداعم (الزهرة) يعملان بأفضل صورة حين تلتزم بإيقاع يومي واضح.</p>
+            </article>
+            
+    </div>
+  </section>
+
+  <!-- Full Natal Placements Fold -->
+  <details class="fold">
+    <summary>المواضع الفلكية الكاملة وحكامها</summary>
+    <div class="fold-body">
+      <p class="fold-note">الأبراج + البيوت بنظام whole-sign مع حاكم كل موضع حسب القواعد الكلاسيكية.</p>
+      <div class="placements">
+        
+            <div class="placement bento-mini" style="--pill-accent: #0A84FF">
+              <div class="placement-top">
+                <span class="placement-body">الشمس</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">السرطان</div>
+              <div class="placement-degree">14°59′</div>
+              <div class="placement-meta">
+                <span>مائي</span>
+                <span>البيت 4</span>
+              </div>
+              <div class="placement-ruler">حاكمه: القمر</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #FF453A">
+              <div class="placement-top">
+                <span class="placement-body">القمر</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">الحمل</div>
+              <div class="placement-degree">20°10′</div>
+              <div class="placement-meta">
+                <span>ناري</span>
+                <span>البيت 1</span>
+              </div>
+              <div class="placement-ruler">حاكمه: المريخ</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #0A84FF">
+              <div class="placement-top">
+                <span class="placement-body">عطارد</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">الجوزاء</div>
+              <div class="placement-degree">23°50′</div>
+              <div class="placement-meta">
+                <span>هوائي</span>
+                <span>البيت 3</span>
+              </div>
+              <div class="placement-ruler">حاكمه: عطارد</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #0A84FF">
+              <div class="placement-top">
+                <span class="placement-body">الزهرة</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">الجوزاء</div>
+              <div class="placement-degree">14°02′</div>
+              <div class="placement-meta">
+                <span>هوائي</span>
+                <span>البيت 3</span>
+              </div>
+              <div class="placement-ruler">حاكمه: عطارد</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #0A84FF">
+              <div class="placement-top">
+                <span class="placement-body">المريخ</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">الحوت</div>
+              <div class="placement-degree">26°39′</div>
+              <div class="placement-meta">
+                <span>مائي</span>
+                <span>البيت 12</span>
+              </div>
+              <div class="placement-ruler">حاكمه: المشتري</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #30D158">
+              <div class="placement-top">
+                <span class="placement-body">المشتري</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">الثور</div>
+              <div class="placement-degree">27°13′</div>
+              <div class="placement-meta">
+                <span>ترابي</span>
+                <span>البيت 2</span>
+              </div>
+              <div class="placement-ruler">حاكمه: الزهرة</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #FF453A">
+              <div class="placement-top">
+                <span class="placement-body">زحل</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">القوس</div>
+              <div class="placement-degree">28°04′</div>
+              <div class="placement-meta">
+                <span>ناري</span>
+                <span>البيت 9</span>
+              </div>
+              <div class="placement-ruler">حاكمه: المشتري</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #FF453A">
+              <div class="placement-top">
+                <span class="placement-body">أورانوس</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">القوس</div>
+              <div class="placement-degree">28°23′</div>
+              <div class="placement-meta">
+                <span>ناري</span>
+                <span>البيت 9</span>
+              </div>
+              <div class="placement-ruler">حاكمه: المشتري</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #30D158">
+              <div class="placement-top">
+                <span class="placement-body">نبتون</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">الجدي</div>
+              <div class="placement-degree">8°38′</div>
+              <div class="placement-meta">
+                <span>ترابي</span>
+                <span>البيت 10</span>
+              </div>
+              <div class="placement-ruler">حاكمه: زحل</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #0A84FF">
+              <div class="placement-top">
+                <span class="placement-body">بلوتو</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">العقرب</div>
+              <div class="placement-degree">9°49′</div>
+              <div class="placement-meta">
+                <span>مائي</span>
+                <span>البيت 8</span>
+              </div>
+              <div class="placement-ruler">حاكمه: المريخ</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #0A84FF">
+              <div class="placement-top">
+                <span class="placement-body">العقدة الشمالية</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">الحوت</div>
+              <div class="placement-degree">16°08′</div>
+              <div class="placement-meta">
+                <span>مائي</span>
+                <span>البيت 12</span>
+              </div>
+              <div class="placement-ruler">حاكمه: المشتري</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #FF453A">
+              <div class="placement-top">
+                <span class="placement-body">الطالع</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">الحمل</div>
+              <div class="placement-degree">27°22′</div>
+              <div class="placement-meta">
+                <span>ناري</span>
+                <span>بدون بيت</span>
+              </div>
+              <div class="placement-ruler">حاكمه: المريخ</div>
+            </div>
+            
+
+            <div class="placement bento-mini" style="--pill-accent: #30D158">
+              <div class="placement-top">
+                <span class="placement-body">وسط السماء</span>
+                <span class="placement-dot"></span>
+              </div>
+              <div class="placement-sign">الجدي</div>
+              <div class="placement-degree">18°55′</div>
+              <div class="placement-meta">
+                <span>ترابي</span>
+                <span>بدون بيت</span>
+              </div>
+              <div class="placement-ruler">حاكمه: زحل</div>
+            </div>
+            
+      </div>
     </div>
   </details>
 
   <footer>
-    <span>تم التوليد بتاريخ 2026-11-10 · محرك Astromind</span>
+    <span>تم التوليد بتاريخ 2026-11-10 · محرك Astromind · هوية Apple Bento & Frosted Glass</span>
     <span><a href="https://github.com/muxd22-alt/ASTR">المستودع على GitHub</a></span>
   </footer>
 </div>
+
 <script>
+  const ASTRO_DATA = {"signs": ["الحمل", "الثور", "الجوزاء", "السرطان", "الأسد", "العذراء", "الميزان", "العقرب", "القوس", "الجدي", "الدلو", "الحوت"], "points": [{"id": "sun", "label": "الشمس", "glyph": "☉", "lon": 104.99, "sign": "السرطان", "element": "water", "house": 4}, {"id": "moon", "label": "القمر", "glyph": "☽", "lon": 20.17, "sign": "الحمل", "element": "fire", "house": 1}, {"id": "mercury", "label": "عطارد", "glyph": "☿", "lon": 83.83, "sign": "الجوزاء", "element": "air", "house": 3}, {"id": "venus", "label": "الزهرة", "glyph": "♀", "lon": 74.03, "sign": "الجوزاء", "element": "air", "house": 3}, {"id": "mars", "label": "المريخ", "glyph": "♂", "lon": 356.65, "sign": "الحوت", "element": "water", "house": 12}, {"id": "jupiter", "label": "المشتري", "glyph": "♃", "lon": 57.22, "sign": "الثور", "element": "earth", "house": 2}, {"id": "saturn", "label": "زحل", "glyph": "♄", "lon": 268.06, "sign": "القوس", "element": "fire", "house": 9}, {"id": "uranus", "label": "أورانوس", "glyph": "♅", "lon": 268.39, "sign": "القوس", "element": "fire", "house": 9}, {"id": "neptune", "label": "نبتون", "glyph": "♆", "lon": 278.64, "sign": "الجدي", "element": "earth", "house": 10}, {"id": "pluto", "label": "بلوتو", "glyph": "♇", "lon": 219.81, "sign": "العقرب", "element": "water", "house": 8}, {"id": "node", "label": "العقدة الشمالية", "glyph": "☊", "lon": 346.13, "sign": "الحوت", "element": "water", "house": 12}, {"id": "asc", "label": "الطالع", "glyph": "ASC", "lon": 27.37, "sign": "الحمل", "element": "fire", "house": 1}, {"id": "mc", "label": "وسط السماء", "glyph": "MC", "lon": 288.92, "sign": "الجدي", "element": "earth", "house": 1}], "aspects": [{"from": "saturn", "to": "neptune", "aspect": "square", "polarity": "friction", "title": "زحل — حساسيتك"}, {"from": "venus", "to": "mercury", "aspect": "trine", "polarity": "opportunity", "title": "الزهرة — تواصلك"}, {"from": "moon", "to": "jupiter", "aspect": "opposition", "polarity": "friction", "title": "القمر — توسعك"}, {"from": "moon", "to": "mars", "aspect": "trine", "polarity": "support", "title": "القمر — طاقتك وحدودك"}, {"from": "sun", "to": "mc", "aspect": "sextile", "polarity": "support", "title": "الشمس — محور مسارك"}, {"from": "mars", "to": "mercury", "aspect": "sextile", "polarity": "support", "title": "المريخ — تواصلك"}], "lunation": {"name": "المحاق الوليد — طور البذرة", "angle": 12.2, "illumination": 1}, "domains": [{"title": "العمل والقرار", "score": 90, "color": "#FF9F0A"}, {"title": "المال والأولويات", "score": 68, "color": "#30D158"}, {"title": "العلاقات والبيت", "score": 70, "color": "#0A84FF"}, {"title": "الطاقة والاتزان", "score": 64, "color": "#FF453A"}], "elements": [{"label": "ناري", "key": "fire", "count": 3, "color": "#FF453A"}, {"label": "ترابي", "key": "earth", "count": 2, "color": "#30D158"}, {"label": "هوائي", "key": "air", "count": 2, "color": "#0A84FF"}, {"label": "مائي", "key": "water", "count": 3, "color": "#FF9F0A"}]};
+
+  // Reading Tab & Navbar Switcher
   const tabs = document.querySelectorAll(".tab");
+  const navJumpButtons = document.querySelectorAll("[data-jump-panel]");
   const panels = document.querySelectorAll(".panel");
+
+  function activatePanel(panelId) {
+    tabs.forEach((item) => {
+      const active = item.dataset.panel === panelId;
+      item.classList.toggle("active", active);
+      item.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    navJumpButtons.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.jumpPanel === panelId);
+    });
+    panels.forEach((item) => {
+      item.classList.toggle("active", item.id === panelId);
+    });
+  }
+
   tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      tabs.forEach((item) => item.classList.remove("active"));
-      panels.forEach((item) => item.classList.remove("active"));
-      tab.classList.add("active");
-      document.getElementById(tab.dataset.panel).classList.add("active");
+    tab.addEventListener("click", () => activatePanel(tab.dataset.panel));
+  });
+
+  navJumpButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      activatePanel(btn.dataset.jumpPanel);
+      document.getElementById("readings").scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
+
+  // Theme Toggle (Pro Dark Titanium <-> Apple Daylight Silver) with automatic chart redraw
+  const rootHtml = document.documentElement;
+  const themeToggle = document.getElementById("themeToggle");
+  const themeLabel = document.getElementById("themeLabel");
+
+  function currentTheme() {
+    return rootHtml.getAttribute("data-theme") || "dark";
+  }
+
+  function applyTheme(theme) {
+    rootHtml.setAttribute("data-theme", theme);
+    themeLabel.textContent = theme === "dark" ? "Pro Dark Titanium" : "Apple Daylight Silver";
+    try {
+      localStorage.setItem("astromind-apple-theme", theme);
+    } catch (_) {}
+    redrawAllCharts();
+  }
+
+  themeToggle.addEventListener("click", () => {
+    const next = currentTheme() === "dark" ? "light" : "dark";
+    applyTheme(next);
+  });
+
+  // High-DPI Canvas setup helper
+  function prepareCanvas(canvas) {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const size = Math.max(280, Math.min(rect.width || 400, 440));
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, size };
+  }
+
+  function drawWheelChart(theme) {
+    const canvas = document.getElementById("wheelCanvas");
+    if (!canvas) return;
+    const { ctx, size } = prepareCanvas(canvas);
+    const cx = size / 2;
+    const cy = size / 2;
+    const outerR = size * 0.45;
+    const signR = size * 0.36;
+    const planetR = size * 0.27;
+    const innerR = size * 0.16;
+
+    const isDark = theme === "dark";
+    const strokeRing = isDark ? "rgba(255,255,255,0.16)" : "rgba(15,23,42,0.14)";
+    const strokeSubtle = isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.08)";
+    const textMain = isDark ? "#F5F5F7" : "#1D1D1F";
+    const textMuted = isDark ? "#A1A1AA" : "#6E6E73";
+    const centerFill = isDark ? "rgba(18, 20, 29, 0.85)" : "rgba(255, 255, 255, 0.9)";
+
+    ctx.clearRect(0, 0, size, size);
+
+    // Subtle ambient ring glow
+    const grad = ctx.createRadialGradient(cx, cy, innerR * 0.4, cx, cy, outerR);
+    grad.addColorStop(0, isDark ? "rgba(10, 132, 255, 0.12)" : "rgba(10, 132, 255, 0.08)");
+    grad.addColorStop(0.65, isDark ? "rgba(255, 159, 10, 0.06)" : "rgba(255, 159, 10, 0.05)");
+    grad.addColorStop(1, "transparent");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Concentric rings
+    [outerR, signR, innerR].forEach((r, idx) => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = idx === 0 ? strokeRing : strokeSubtle;
+      ctx.lineWidth = idx === 0 ? 1.5 : 1;
+      ctx.stroke();
+    });
+
+    // 12 Zodiac Sign sectors
+    const elColors = ["#FF453A", "#30D158", "#0A84FF", "#FF9F0A"];
+    ASTRO_DATA.signs.forEach((signName, i) => {
+      const startAng = ((i * 30 - 90) * Math.PI) / 180;
+      const midAng = (((i * 30 + 15) - 90) * Math.PI) / 180;
+      const x1 = cx + Math.cos(startAng) * innerR;
+      const y1 = cy + Math.sin(startAng) * innerR;
+      const x2 = cx + Math.cos(startAng) * outerR;
+      const y2 = cy + Math.sin(startAng) * outerR;
+
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.strokeStyle = strokeSubtle;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      const labelR = (outerR + signR) / 2;
+      const lx = cx + Math.cos(midAng) * labelR;
+      const ly = cy + Math.sin(midAng) * labelR;
+      ctx.fillStyle = elColors[i % 4];
+      ctx.font = `700 ${Math.max(10, Math.round(size * 0.027))}px "Thmanyah Sans", sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(signName, lx, ly);
+    });
+
+    // Map planet coordinates
+    const coords = {};
+    ASTRO_DATA.points.forEach((pt, idx) => {
+      const ang = ((pt.lon - 90) * Math.PI) / 180;
+      const rOffset = (idx % 2 === 0 ? 0 : -14);
+      const r = planetR + rOffset;
+      const x = cx + Math.cos(ang) * r;
+      const y = cy + Math.sin(ang) * r;
+      coords[pt.id] = { x, y, pt };
+    });
+
+    // Draw active aspect chords
+    const polColor = {
+      support: "#30D158",
+      opportunity: "#0A84FF",
+      friction: "#FF453A",
+      info: "#FF9F0A"
+    };
+    ASTRO_DATA.aspects.forEach((asp) => {
+      const a = coords[asp.from];
+      const b = coords[asp.to];
+      if (!a || !b) return;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = polColor[asp.polarity] || "#0A84FF";
+      ctx.lineWidth = 1.6;
+      ctx.globalAlpha = 0.72;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    });
+
+    // Draw planet nodes
+    const elNodeColor = {
+      fire: "#FF453A",
+      earth: "#30D158",
+      air: "#0A84FF",
+      water: "#FF9F0A"
+    };
+    Object.values(coords).forEach(({ x, y, pt }) => {
+      const c = elNodeColor[pt.element] || "#0A84FF";
+      ctx.beginPath();
+      ctx.arc(x, y, 11, 0, Math.PI * 2);
+      ctx.fillStyle = centerFill;
+      ctx.fill();
+      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = c;
+      ctx.stroke();
+
+      ctx.fillStyle = textMain;
+      ctx.font = `700 10px "Thmanyah Sans", sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(pt.glyph, x, y);
+    });
+
+    // Center hub (Lunation illumination)
+    ctx.beginPath();
+    ctx.arc(cx, cy, innerR - 4, 0, Math.PI * 2);
+    ctx.fillStyle = centerFill;
+    ctx.fill();
+
+    ctx.fillStyle = textMain;
+    ctx.font = `700 ${Math.round(size * 0.036)}px "Thmanyah Serif Display", serif`;
+    ctx.textAlign = "center";
+    ctx.fillText(`${ASTRO_DATA.lunation.illumination}%`, cx, cy - 8);
+
+    ctx.fillStyle = textMuted;
+    ctx.font = `500 ${Math.round(size * 0.024)}px "Thmanyah Sans", sans-serif`;
+    ctx.fillText("إضاءة القمر", cx, cy + 12);
+  }
+
+  function drawDomainsChart(theme) {
+    const canvas = document.getElementById("radarCanvas");
+    if (!canvas) return;
+    const { ctx, size } = prepareCanvas(canvas);
+    const isDark = theme === "dark";
+    const textMain = isDark ? "#F5F5F7" : "#1D1D1F";
+    const textMuted = isDark ? "#A1A1AA" : "#6E6E73";
+    const trackBg = isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.08)";
+
+    ctx.clearRect(0, 0, size, size);
+
+    const padX = size * 0.08;
+    let y = size * 0.11;
+
+    ctx.fillStyle = textMain;
+    ctx.font = `700 ${Math.round(size * 0.033)}px "Thmanyah Serif Display", serif`;
+    ctx.textAlign = "right";
+    ctx.fillText("حيوية النواحي الأربع اليوم", size - padX, y);
+    y += size * 0.07;
+
+    const barW = size - padX * 2;
+    ASTRO_DATA.domains.forEach((d) => {
+      ctx.fillStyle = textMain;
+      ctx.font = `700 ${Math.round(size * 0.028)}px "Thmanyah Sans", sans-serif`;
+      ctx.textAlign = "right";
+      ctx.fillText(d.title, size - padX, y);
+
+      ctx.fillStyle = d.color;
+      ctx.textAlign = "left";
+      ctx.fillText(`${d.score}%`, padX, y);
+
+      y += size * 0.032;
+      ctx.fillStyle = trackBg;
+      ctx.beginPath();
+      ctx.roundRect(padX, y, barW, 10, 6);
+      ctx.fill();
+
+      const fillW = (barW * d.score) / 100;
+      ctx.fillStyle = d.color;
+      ctx.beginPath();
+      ctx.roundRect(size - padX - fillW, y, fillW, 10, 6);
+      ctx.fill();
+
+      y += size * 0.082;
+    });
+
+    y += size * 0.02;
+    ctx.fillStyle = textMain;
+    ctx.font = `700 ${Math.round(size * 0.033)}px "Thmanyah Serif Display", serif`;
+    ctx.textAlign = "right";
+    ctx.fillText("توزيع العناصر الأربعة في الخريطة", size - padX, y);
+    y += size * 0.065;
+
+    const totalEl = ASTRO_DATA.elements.reduce((acc, item) => acc + item.count, 0) || 1;
+    const pillW = (barW - 18) / 4;
+    ASTRO_DATA.elements.forEach((el, idx) => {
+      const x = size - padX - (idx + 1) * pillW - idx * 6;
+      const pct = Math.round((el.count / totalEl) * 100);
+      ctx.fillStyle = trackBg;
+      ctx.beginPath();
+      ctx.roundRect(x, y, pillW, size * 0.16, 14);
+      ctx.fill();
+
+      ctx.strokeStyle = el.color;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      ctx.fillStyle = el.color;
+      ctx.font = `700 ${Math.round(size * 0.036)}px "Thmanyah Serif Display", serif`;
+      ctx.textAlign = "center";
+      ctx.fillText(`${pct}%`, x + pillW / 2, y + size * 0.065);
+
+      ctx.fillStyle = textMuted;
+      ctx.font = `500 ${Math.round(size * 0.025)}px "Thmanyah Sans", sans-serif`;
+      ctx.fillText(el.label, x + pillW / 2, y + size * 0.12);
+    });
+  }
+
+  function redrawAllCharts() {
+    const theme = currentTheme();
+    drawWheelChart(theme);
+    drawDomainsChart(theme);
+  }
+
+  // Restore saved theme or default to Pro Dark Titanium, and draw charts
+  try {
+    const saved = localStorage.getItem("astromind-apple-theme");
+    if (saved === "light" || saved === "dark") {
+      rootHtml.setAttribute("data-theme", saved);
+      themeLabel.textContent = saved === "dark" ? "Pro Dark Titanium" : "Apple Daylight Silver";
+    }
+  } catch (_) {}
+
+  window.addEventListener("resize", redrawAllCharts);
+  redrawAllCharts();
 </script>
 </body>
 </html>
