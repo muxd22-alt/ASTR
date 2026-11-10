@@ -27,3 +27,4 @@ jobs:
         run: |
           python -m astromind validate --file profiles/profiles.example.json
           python -m astromind daily --file profiles/profiles.example.json --date 2026-11-09 --no-state --out /tmp/astromind-smoke
+          python -m astromind story --file profiles/profiles.example.json --date 2026-11-09 --mode short --no-ai --no-state --out /tmp/astromind-story

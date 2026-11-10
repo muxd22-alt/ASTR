@@ -22,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ASTROMIND_PROFILES: ${{ secrets.ASTROMIND_PROFILES }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENROUTER_MODEL: google/gemma-4-31b-it:free
       PYTHONUNBUFFERED: "1"
     steps:
       - uses: actions/checkout@v4
@@ -54,10 +56,12 @@ jobs:
             python -m astromind monthly --month "${{ inputs.month }}"
             python -m astromind manuals --month "${{ inputs.month }}"
             python -m astromind calendar --month "${{ inputs.month }}"
+            python -m astromind story --mode deep --month "${{ inputs.month }}"
           else
             python -m astromind monthly
             python -m astromind manuals
             python -m astromind calendar
+            python -m astromind story --mode deep
           fi
 
       - name: Show guide in run summary
@@ -65,6 +69,10 @@ jobs:
         run: |
           if [ -f outputs/this_month.md ]; then
             cat outputs/this_month.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f outputs/reading.md ]; then
+            printf '\n\n' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/reading.md >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Upload reports

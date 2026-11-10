@@ -22,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ASTROMIND_PROFILES: ${{ secrets.ASTROMIND_PROFILES }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENROUTER_MODEL: google/gemma-4-31b-it:free
       PYTHONUNBUFFERED: "1"
     steps:
       - uses: actions/checkout@v4
@@ -53,9 +55,11 @@ jobs:
           if [ -n "${{ inputs.date }}" ]; then
             python -m astromind weekly --date "${{ inputs.date }}"
             python -m astromind calendar --date "${{ inputs.date }}"
+            python -m astromind story --mode standard --date "${{ inputs.date }}"
           else
             python -m astromind weekly
             python -m astromind calendar
+            python -m astromind story --mode standard
           fi
 
       - name: Show digest in run summary
@@ -63,6 +67,10 @@ jobs:
         run: |
           if [ -f outputs/this_week.md ]; then
             cat outputs/this_week.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f outputs/reading.md ]; then
+            printf '\n\n' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/reading.md >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Upload reports

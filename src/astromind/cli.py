@@ -41,6 +41,7 @@ from astromind.generators.md_builder import (
 )
 from astromind.models import Bundle, ProfileError
 from astromind.profiles import encode_file, load_bundle
+from astromind.reading import generate_reading
 from astromind.state import default_state, load_state, prune, save_state
 
 
@@ -651,6 +652,40 @@ def cmd_ask(args: argparse.Namespace, context: Context) -> int:
     return 0
 
 
+def cmd_story(args: argparse.Namespace, context: Context) -> int:
+    today_anchor = parse_day(args.date, context.tz)
+    mode = getattr(args, "mode", "standard")
+    if mode == "deep" or args.month:
+        anchor = today_anchor
+        if args.month:
+            try:
+                year, month = (int(part) for part in args.month.split("-", 1))
+                anchor = date(year, month, 1)
+            except (ValueError, TypeError) as exc:
+                raise ProfileError("--month must be YYYY-MM") from exc
+        start, end = month_bounds(anchor)
+        as_of = max(today_anchor, start)
+        signals = collect_signals(context, start, end, daily=False)
+    else:
+        start = end = as_of = today_anchor
+        signals = collect_signals(context, start, end, daily=True)
+
+    data = _data(context, signals, start, end, as_of=as_of)
+    text = generate_reading(
+        context,
+        data,
+        mode=mode,
+        use_ai=not getattr(args, "no_ai", False),
+        model=getattr(args, "model", None),
+    )
+    root = outputs_root(args)
+    write_report(root, "reading.md", text)
+    write_report(root, f"readings/{start.isoformat()}_{mode}.md", text)
+    rebuild_index(root)
+    print(text)
+    return 0
+
+
 def cmd_run_all(args: argparse.Namespace, context: Context) -> int:
     cmd_daily(args, context)
     cmd_weekly(args, context)
@@ -689,6 +724,23 @@ def build_parser() -> argparse.ArgumentParser:
     ask_parser = sub.add_parser("ask", parents=[common], help="answer a specific question from this week's signals")
     ask_parser.add_argument("question", nargs="+")
     ask_parser.set_defaults(func=cmd_ask)
+    story_parser = sub.add_parser(
+        "story",
+        parents=[common],
+        help="intuitive astrology reading (short/standard/deep)",
+    )
+    story_parser.add_argument(
+        "--mode",
+        choices=("short", "standard", "deep"),
+        default="standard",
+    )
+    story_parser.add_argument("--model", help="OpenRouter model override")
+    story_parser.add_argument(
+        "--no-ai",
+        action="store_true",
+        help="use the local fallback even when OPENROUTER_API_KEY is set",
+    )
+    story_parser.set_defaults(func=cmd_story)
     sub.add_parser("run-all", parents=[common], help="daily + weekly + monthly + manuals + calendar").set_defaults(func=cmd_run_all)
     return parser
 

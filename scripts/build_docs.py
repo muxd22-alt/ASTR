@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import os
 import re
 from datetime import date
 from pathlib import Path
@@ -32,10 +33,12 @@ from astromind.i18n import (
     SIGNS_AR,
     element_ar,
     format_date,
+    format_date_short,
     sign_element,
     sign_of,
 )
 from astromind.profiles import load_bundle
+from astromind.reading import generate_reading
 
 
 def inline(text: str) -> str:
@@ -233,9 +236,46 @@ def birth_line(profile, city: str) -> str:
     )
 
 
-def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
+def signal_chips(data, limit: int = 4) -> str:
+    floor = data.as_of or data.start
+    chips: list[str] = []
+    for domain, label in (("self", "شخصي"), ("relationship", "علاقة")):
+        for signal in data.signals.get(domain, []):
+            if signal.date < floor:
+                continue
+            chips.append(
+                f'<span class="chip"><b>{html.escape(label)}</b> '
+                f'{html.escape(format_date_short(signal.date))} · '
+                f'{html.escape(signal.text.title)}</span>'
+            )
+            if len(chips) >= limit:
+                break
+        if len(chips) >= limit:
+            break
+    if not chips:
+        return '<span class="chip muted">لا إشارات قوية اليوم</span>'
+    return "\n".join(chips)
+
+
+def build_page(
+    bundle,
+    context,
+    day: date,
+    city: str = "الرياض",
+    *,
+    use_ai: bool = True,
+    model: str | None = None,
+) -> str:
     daily_signals = collect_signals(context, day, day, daily=True)
-    daily = build_daily(_data(context, daily_signals, day, day, as_of=day))
+    daily_data = _data(context, daily_signals, day, day, as_of=day)
+    daily = build_daily(daily_data)
+    reading = generate_reading(
+        context,
+        daily_data,
+        mode="standard",
+        use_ai=use_ai,
+        model=model,
+    )
 
     week_start_day = week_start(day)
     week_end_day = date.fromordinal(week_start_day.toordinal() + 6)
@@ -424,6 +464,41 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
   }}
   .note strong {{ color: #fff0eb; }}
   .birth {{ display: block; margin-top: 0.35rem; color: var(--muted); font-size: 0.84rem; }}
+  .reading-card {{
+    position: relative;
+    border: 1px solid rgba(232, 192, 125, 0.32);
+    background:
+      radial-gradient(circle at 92% 4%, rgba(232, 192, 125, 0.13), transparent 24rem),
+      linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025));
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  }}
+  .reading-card h1 {{ font-size: clamp(1.5rem, 3vw, 2rem); }}
+  .reading-card h2 {{ color: var(--gold-soft); }}
+  .chips {{ display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.9rem 0 0; }}
+  .chip {{
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    border: 1px solid rgba(255,255,255,0.11); border-radius: 999px;
+    padding: 0.28rem 0.7rem; color: var(--muted); font-size: 0.78rem;
+    background: rgba(255,255,255,0.035);
+  }}
+  .chip b {{ color: var(--gold-soft); font-weight: 700; }}
+  .chip.muted {{ opacity: 0.72; }}
+  .fold {{
+    margin-top: 1.5rem; border: 1px solid rgba(255,255,255,0.09);
+    border-radius: var(--radius); background: rgba(255,255,255,0.025);
+    overflow: hidden;
+  }}
+  .fold > summary {{
+    cursor: pointer; list-style: none; padding: 1rem 1.2rem;
+    font-family: "Thmanyah Serif Display", serif; font-weight: 700;
+    color: var(--gold-soft); display: flex; align-items: center; justify-content: space-between;
+  }}
+  .fold > summary::-webkit-details-marker {{ display: none; }}
+  .fold > summary::after {{ content: "+"; color: var(--muted); font-size: 1.1rem; }}
+  .fold[open] > summary {{ border-bottom: 1px solid rgba(255,255,255,0.08); }}
+  .fold[open] > summary::after {{ content: "−"; }}
+  .fold-body {{ padding: 1rem 1.2rem 1.3rem; }}
+  .fold-note {{ margin: 0 0 0.8rem; color: var(--muted); font-size: 0.86rem; }}
   section {{ margin-top: 2.6rem; }}
   .section-head {{ display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }}
   h2 {{ font-size: clamp(1.4rem, 3vw, 1.9rem); margin: 0; font-family: "Thmanyah Serif Display", serif; font-weight: 700; }}
@@ -480,7 +555,7 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
 <div class="stars"></div>
 <div class="wrap">
   <header class="hero">
-    <div class="badge"><span class="dot"></span> عرض حي · تقرير مولّد آليًا</div>
+    <div class="badge"><span class="dot"></span> قراءة تأملية · تُحدَّث آليًا</div>
     <h1><span>{html.escape(profile.name)}</span></h1>
     <p class="subtitle">{html.escape(signature(chart))}</p>
   </header>
@@ -496,28 +571,39 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
 
   <section>
     <div class="section-head">
-      <h2>المواضع الكاملة</h2>
-      <p>الأبراج + البيوت {html.escape("بنظام البيوت الكاملة" if chart.sign_only else f"بنظام {chart.house_system}")}</p>
+      <h2>قراءة اليوم</h2>
+      <p>{html.escape(format_date(day, include_weekday=True))}</p>
     </div>
-    <div class="placements">
-      {placement_cards(chart, profile)}
+    <div class="report reading-card">{markdown_to_html(reading)}</div>
+    <div class="chips">
+      {signal_chips(daily_data)}
     </div>
   </section>
 
-  <section>
-    <div class="section-head">
-      <h2>التقارير في العمل</h2>
-      <p>نفس المخرجات التي تُرفع كـ Artifacts في GitHub Actions</p>
+  <details class="fold">
+    <summary>المواضع الكاملة</summary>
+    <div class="fold-body">
+      <p class="fold-note">الأبراج + البيوت {html.escape("بنظام البيوت الكاملة" if chart.sign_only else f"بنظام {chart.house_system}")}. افتح القسم فقط عند الحاجة.</p>
+      <div class="placements">
+        {placement_cards(chart, profile)}
+      </div>
     </div>
-    <div class="tabs" role="tablist">
-      <button class="tab active" data-panel="daily" role="tab">اليوم</button>
-      <button class="tab" data-panel="weekly" role="tab">الأسبوع</button>
-      <button class="tab" data-panel="monthly" role="tab">الشهر</button>
+  </details>
+
+  <details class="fold">
+    <summary>التقارير الكاملة</summary>
+    <div class="fold-body">
+      <p class="fold-note">نفس المخرجات التي تُرفع كـ Artifacts في GitHub Actions.</p>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-panel="daily" role="tab">اليوم</button>
+        <button class="tab" data-panel="weekly" role="tab">الأسبوع</button>
+        <button class="tab" data-panel="monthly" role="tab">الشهر</button>
+      </div>
+      <div class="panel active" id="daily"><div class="report">{markdown_to_html(daily)}</div></div>
+      <div class="panel" id="weekly"><div class="report">{markdown_to_html(weekly)}</div></div>
+      <div class="panel" id="monthly"><div class="report">{markdown_to_html(monthly)}</div></div>
     </div>
-    <div class="panel active" id="daily"><div class="report">{markdown_to_html(daily)}</div></div>
-    <div class="panel" id="weekly"><div class="report">{markdown_to_html(weekly)}</div></div>
-    <div class="panel" id="monthly"><div class="report">{markdown_to_html(monthly)}</div></div>
-  </section>
+  </details>
 
   <footer>
     <span>تم التوليد بتاريخ {day.isoformat()} · محرك Astromind</span>
@@ -543,16 +629,29 @@ def build_page(bundle, context, day: date, city: str = "الرياض") -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build docs/index.html from a profile bundle")
-    parser.add_argument("--file", default="profiles.local/profiles.json")
+    parser.add_argument("--file", default=None)
     parser.add_argument("--date", default=None)
     parser.add_argument("--city", default="الرياض")
     parser.add_argument("--out", default="docs/index.html")
+    parser.add_argument("--model", default=None)
+    parser.add_argument(
+        "--no-ai",
+        action="store_true",
+        help="use the local fallback reading even when OPENROUTER_API_KEY is set",
+    )
     args = parser.parse_args()
 
-    bundle = load_bundle(Path(args.file))
+    bundle = load_bundle(Path(args.file) if args.file else None)
     context = build_context(bundle)
     day = parse_day(args.date, context.tz)
-    page = build_page(bundle, context, day, city=args.city)
+    page = build_page(
+        bundle,
+        context,
+        day,
+        city=args.city,
+        use_ai=not args.no_ai,
+        model=args.model,
+    )
 
     output = Path(args.out)
     output.parent.mkdir(parents=True, exist_ok=True)

@@ -277,12 +277,32 @@ python -m astromind monthly [--month YYYY-MM]
 python -m astromind manuals [--month YYYY-MM]
 python -m astromind calendar [--month YYYY-MM]
 python -m astromind compute [--month YYYY-MM]   # حقائق JSON فقط
+python -m astromind story [--mode short|standard|deep] [--no-ai]  # قراءة سردية
 python -m astromind ask "ماذا أقول لها الليلة؟"  # من إشارات هذا الأسبوع
 python -m astromind encode --file profiles.local/profiles.json
 python -m astromind run-all
 ```
 
 خيارات مشتركة: `--file` لملف محلي، `--out` لمجلد الإخراج، `--no-state` لتعطيل ذاكرة التكرار.
+
+### القراءة السردية عبر OpenRouter (اختياري)
+
+الطبقة السردية لا تغيّر الحسابات الفلكية إطلاقًا؛ она تحوّل الحقائق المحسوبة مسبقًا إلى نص.
+
+- **المفتاح:** أضف GitHub Secret باسم `OPENROUTER_API_KEY`.
+- **الموديل الافتراضي:** `google/gemma-4-31b-it:free`، ويمكن تغييره عبر `OPENROUTER_MODEL` أو `--model`.
+- **الأمر:**
+  ```bash
+  python -m astromind story --mode short       # 60 ثانية
+  python -m astromind story --mode standard    # قراءة كاملة
+  python -m astromind story --mode deep --month 2026-11
+  ```
+- **دون مفتاح:** يعمل النظام بقراءة محلية مبنية على القواعد، ويظهر تنبيه بذلك.
+- **`--no-ai`:** يجبر القراءة المحلية حتى لو وُجد المفتاح.
+- **صفحة `docs/index.html`:** تُحدَّث تلقائيًا من `daily_personal_guide.yml` عند وجود المفتاح.
+- **الأسلوب التحريري:** موثّق في `skills/intuitive-astrology-storytelling/SKILL.md`.
+
+> القراءة السردية تأملية ورمزية، وليست تشخيصًا أو تنبؤًا مؤكدًا. جميع التواريخ تلتزم بـ `as_of`.
 
 ---
 
@@ -297,6 +317,7 @@ python -m astromind run-all
 - **منع التكرار:** مفتاح الإشارة = المجال + الكوكب + الهدف + الزاوية، مع الاحتفاظ بأضيق orb.
 - **الحالة:** `state/state.json` تُحفظ عبر `actions/cache`، وتُنقّى تلقائيًا بعد 90 يومًا.
 - **التنبيهات:** نوافذ التواصل وتواريخ الحذر تبدأ من تاريخ التوليد (`as_of`) ولا تعرض أيامًا ماضية.
+- **الطبقة السردية:** `src/astromind/reading/` تبني الحقائق من الخريطة والعبور، ثم تستدعي OpenRouter اختياريًا. لا تتدخل في `engines/` ولا في التواريخ.
 
 ---
 

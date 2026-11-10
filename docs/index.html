@@ -149,6 +149,41 @@
   }
   .note strong { color: #fff0eb; }
   .birth { display: block; margin-top: 0.35rem; color: var(--muted); font-size: 0.84rem; }
+  .reading-card {
+    position: relative;
+    border: 1px solid rgba(232, 192, 125, 0.32);
+    background:
+      radial-gradient(circle at 92% 4%, rgba(232, 192, 125, 0.13), transparent 24rem),
+      linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025));
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  }
+  .reading-card h1 { font-size: clamp(1.5rem, 3vw, 2rem); }
+  .reading-card h2 { color: var(--gold-soft); }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.9rem 0 0; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    border: 1px solid rgba(255,255,255,0.11); border-radius: 999px;
+    padding: 0.28rem 0.7rem; color: var(--muted); font-size: 0.78rem;
+    background: rgba(255,255,255,0.035);
+  }
+  .chip b { color: var(--gold-soft); font-weight: 700; }
+  .chip.muted { opacity: 0.72; }
+  .fold {
+    margin-top: 1.5rem; border: 1px solid rgba(255,255,255,0.09);
+    border-radius: var(--radius); background: rgba(255,255,255,0.025);
+    overflow: hidden;
+  }
+  .fold > summary {
+    cursor: pointer; list-style: none; padding: 1rem 1.2rem;
+    font-family: "Thmanyah Serif Display", serif; font-weight: 700;
+    color: var(--gold-soft); display: flex; align-items: center; justify-content: space-between;
+  }
+  .fold > summary::-webkit-details-marker { display: none; }
+  .fold > summary::after { content: "+"; color: var(--muted); font-size: 1.1rem; }
+  .fold[open] > summary { border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .fold[open] > summary::after { content: "−"; }
+  .fold-body { padding: 1rem 1.2rem 1.3rem; }
+  .fold-note { margin: 0 0 0.8rem; color: var(--muted); font-size: 0.86rem; }
   section { margin-top: 2.6rem; }
   .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
   h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); margin: 0; font-family: "Thmanyah Serif Display", serif; font-weight: 700; }
@@ -205,7 +240,7 @@
 <div class="stars"></div>
 <div class="wrap">
   <header class="hero">
-    <div class="badge"><span class="dot"></span> عرض حي · تقرير مولّد آليًا</div>
+    <div class="badge"><span class="dot"></span> قراءة تأملية · تُحدَّث آليًا</div>
     <h1><span>مثال</span></h1>
     <p class="subtitle">الشمس السرطان · القمر الحمل · الطالع الحمل</p>
   </header>
@@ -241,11 +276,46 @@
 
   <section>
     <div class="section-head">
-      <h2>المواضع الكاملة</h2>
-      <p>الأبراج + البيوت بنظام البيوت الكاملة</p>
+      <h2>قراءة اليوم</h2>
+      <p>الثلاثاء 10 نوفمبر 2026</p>
     </div>
-    <div class="placements">
-      
+    <div class="report reading-card"><h1>قراءة مثال — 2026-11-10</h1>
+<blockquote>هذه قراءة على مستوى الأبراج والبيوت المقدمة يدويًا. الدرجات الدقيقة والتوقيت اليومي ليسا متاحين، لذلك اقرأها كخريطة رمزية لا كتنبؤ.</blockquote>
+<h2>المفتاح</h2>
+<p>تجمع خريطتك بين شمس السرطان في البيت 4 وقمر الحمل في البيت 1، وطالعك الحمل. شمسك تحمل ذاكرة عاطفية عميقة وحاسة تلتقط ما لم يُقل، وقمرك يتحرك بـاستجابة سريعة واشتعال عاطفي ثم حاجة للحركة، بينما طالعك يجعلك تدخل المشهد مباشرة وتجعل الآخرين يرون المبادرة أولًا. القراءة هنا لا تفصل هذه الطبقات؛ بل تحاول أن تسمع الحوار بينها.</p>
+<h2>العالم الداخلي</h2>
+<p>احتياجك العاطفي الأساسي: تقدير + مساحة + حركة. يحتاج أن يُرى ويُشجّع، لا أن يُدار. قد يبدو هذا الاحتياج بسيطًا، لكنه يصبح واضحًا في اللحظات التي تشعر فيها أن أحدًا لا يرى ما تحتاجه فعلًا. حين تهدأ، اسأل: هل أطلب القرب بطريقة يمكن للآخر أن يفهمها، أم أطلب أن يخمّن؟</p>
+<h2>العالم الخارجي</h2>
+<p>في العلاقات، زهرتك تميل إلى كلام ورفقة خفيفة ومساحة. الحوار هو المقدمة. أما مريخك فيخرج عند الاحتكاك بـانسحاب وجرح داخلي. اسأل بلطف ولا تفسّر الصمت كبرود. الفرق بين ما تحتاجه وما تُظهره هو غالبًا مساحة سوء الفهم. قل احتياجك قبل أن تختبره بالصمت.</p>
+<h2>الظل</h2>
+<p>الظل هنا ليس عيبًا؛ إنه الطريقة التي تحمي بها نفسك من ألم قديم. يخشى فقدان الحماس أو الحرية؛ طمئنه أن الالتزام لا يقتل الحياة. راقب اللحظة التي تنسحب فيها قبل أن تشرح، أو التي تشرح فيها أكثر من حاجتك. كلاهما محاولة للسيطرة على ألم لا يحتاج سيطرة، بل حضورًا.</p>
+<h2>طاقة اليوم</h2>
+<ul>
+<li>10 نوفمبر: زحل يضغط على قمرك: طاقة عاطفية محدودة وحاجة أكبر للهدوء. — قلّل الالتزامات، ثبّت روتينًا بسيطًا، واطلب الدعم بوضوح.
+</li>
+<li>10 نوفمبر: زحل يضغط على محور ظهورك عبر اقتران (دمج مباشر). — اختر استجابة واحدة صغيرة، ولا تحاول حل كل شيء اليوم.
+</li>
+<li>10 نوفمبر: زحل يلامس شمسك: مسؤولية وضغط إنجاز. — اختر واجبًا واحدًا وأتمّه، وقلّل الوعود.
+</li>
+</ul>
+<h2>الهدية</h2>
+<p>قدرتك على احتواء ما لا يُقال، ومنح الآخر إحساسًا بأنه مرئي.</p>
+<h2>الرسالة</h2>
+<p>لا تحتاج أن تحل نفسك اليوم. اختر جملة واحدة صادقة تقولها لشخص آمن، وخطوة واحدة صغيرة تثبت أنك تسمع نفسك. التغيير الحقيقي غالبًا بهذا الحجم.</p></div>
+    <div class="chips">
+      <span class="chip"><b>شخصي</b> 10 نوفمبر · زحل — أمانك العاطفي</span>
+<span class="chip"><b>شخصي</b> 10 نوفمبر · زحل — محور ظهورك</span>
+<span class="chip"><b>شخصي</b> 10 نوفمبر · زحل — هويتك</span>
+<span class="chip"><b>شخصي</b> 10 نوفمبر · زحل — محور شريكك</span>
+    </div>
+  </section>
+
+  <details class="fold">
+    <summary>المواضع الكاملة</summary>
+    <div class="fold-body">
+      <p class="fold-note">الأبراج + البيوت بنظام البيوت الكاملة. افتح القسم فقط عند الحاجة.</p>
+      <div class="placements">
+        
             <div class="placement">
               <div class="placement-body">الشمس</div>
               <div class="placement-sign">السرطان</div>
@@ -329,25 +399,25 @@
               <div class="placement-meta"><span>ترابي</span><span>بدون بيت</span></div>
             </div>
             
+      </div>
     </div>
-  </section>
+  </details>
 
-  <section>
-    <div class="section-head">
-      <h2>التقارير في العمل</h2>
-      <p>نفس المخرجات التي تُرفع كـ Artifacts في GitHub Actions</p>
-    </div>
-    <div class="tabs" role="tablist">
-      <button class="tab active" data-panel="daily" role="tab">اليوم</button>
-      <button class="tab" data-panel="weekly" role="tab">الأسبوع</button>
-      <button class="tab" data-panel="monthly" role="tab">الشهر</button>
-    </div>
-    <div class="panel active" id="daily"><div class="report"><h1>بطاقة اليوم — الاثنين 9 نوفمبر 2026</h1>
+  <details class="fold">
+    <summary>التقارير الكاملة</summary>
+    <div class="fold-body">
+      <p class="fold-note">نفس المخرجات التي تُرفع كـ Artifacts في GitHub Actions.</p>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-panel="daily" role="tab">اليوم</button>
+        <button class="tab" data-panel="weekly" role="tab">الأسبوع</button>
+        <button class="tab" data-panel="monthly" role="tab">الشهر</button>
+      </div>
+      <div class="panel active" id="daily"><div class="report"><h1>بطاقة اليوم — الثلاثاء 10 نوفمبر 2026</h1>
 <p><strong>الجو العام:</strong> زحل يضغط على قمرك: طاقة عاطفية محدودة وحاجة أكبر للهدوء.</p>
 <p><strong>افعل:</strong> قلّل الالتزامات، ثبّت روتينًا بسيطًا، واطلب الدعم بوضوح. <strong>تجنّب:</strong> لا تفسّر انسحاب الآخرين كرفض؛ قد يكونون تحت ضغطهم أيضًا.</p>
-<p><strong>نافذة اليوم:</strong> نافذة 9 نوفمبر (طوال اليوم) — القمر يسهّل هويتك عبر تثليث (تدفق وسهولة).</p>
+<p><strong>نافذة اليوم:</strong> نافذة 10 نوفمبر (طوال اليوم) — القمر يلامس قمرك: مزاج متغير واحتياج واضح للراحة. <strong>احذر:</strong> احذر 10 نوفمبر (طوال اليوم) — القمر يلامس زهرتك: حنان سهل وتقدير صغير يكفي.</p>
 <blockquote>ثقة القراءة: متوسطة — مواضع أبراج وبيوت مقدمة يدويًا لـ مثال. تاريخ الميلاد متوفر، لكن التوقيت اليومي مبني على مستوى الأبراج لأن الدرجات الدقيقة غير متاحة.</blockquote></div></div>
-    <div class="panel" id="weekly"><div class="report"><h1>موجز الأسبوع — 8 نوفمبر إلى 14 نوفمبر 2026</h1>
+      <div class="panel" id="weekly"><div class="report"><h1>موجز الأسبوع — 8 نوفمبر إلى 14 نوفمبر 2026</h1>
 <p><strong>القمر هذا الأسبوع:</strong> تغيّرات القمر: 8 نوفمبر 01:39 → العقرب، 10 نوفمبر 11:35 → القوس، 12 نوفمبر 23:27 → الجدي</p>
 <h2>طقسك الشخصي</h2>
 <ul>
@@ -377,11 +447,6 @@
 <th>أهم إشارة شخصية</th>
 <th>إشارة علاقة</th>
 </tr></thead><tbody>
-<tr>
-<td>9 نوفمبر</td>
-<td>—</td>
-<td>—</td>
-</tr>
 <tr>
 <td>10 نوفمبر</td>
 <td>القمر — قربك وتقديرك</td>
@@ -419,7 +484,7 @@
 </li>
 </ul>
 <blockquote>ثقة القراءة: متوسطة — مواضع أبراج وبيوت مقدمة يدويًا لـ مثال. تاريخ الميلاد متوفر، لكن التوقيت اليومي مبني على مستوى الأبراج لأن الدرجات الدقيقة غير متاحة.</blockquote></div></div>
-    <div class="panel" id="monthly"><div class="report"><h1>الدليل الشهري — 1 نوفمبر إلى 30 نوفمبر 2026</h1>
+      <div class="panel" id="monthly"><div class="report"><h1>الدليل الشهري — 1 نوفمبر إلى 30 نوفمبر 2026</h1>
 <p><strong>القمر خلال الشهر:</strong> تغيّرات القمر:</p>
 <ul>
 <li>1 نوفمبر 07:18 → الأسد
@@ -494,10 +559,11 @@
 </li>
 </ul>
 <blockquote>ثقة القراءة: متوسطة — مواضع أبراج وبيوت مقدمة يدويًا لـ مثال. تاريخ الميلاد متوفر، لكن التوقيت اليومي مبني على مستوى الأبراج لأن الدرجات الدقيقة غير متاحة.</blockquote></div></div>
-  </section>
+    </div>
+  </details>
 
   <footer>
-    <span>تم التوليد بتاريخ 2026-11-09 · محرك Astromind</span>
+    <span>تم التوليد بتاريخ 2026-11-10 · محرك Astromind</span>
     <span><a href="https://github.com/muxd22-alt/ASTR">المستودع على GitHub</a></span>
   </footer>
 </div>

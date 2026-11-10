@@ -22,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ASTROMIND_PROFILES: ${{ secrets.ASTROMIND_PROFILES }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENROUTER_MODEL: google/gemma-4-31b-it:free
       PYTHONUNBUFFERED: "1"
     steps:
       - uses: actions/checkout@v4
@@ -52,8 +54,10 @@ jobs:
         run: |
           if [ -n "${{ inputs.date }}" ]; then
             python -m astromind daily --date "${{ inputs.date }}"
+            python -m astromind story --mode short --date "${{ inputs.date }}"
           else
             python -m astromind daily
+            python -m astromind story --mode short
           fi
 
       - name: Show card in run summary
@@ -61,6 +65,10 @@ jobs:
         run: |
           if [ -f outputs/today.md ]; then
             cat outputs/today.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f outputs/reading.md ]; then
+            printf '\n\n' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/reading.md >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Upload reports
@@ -70,6 +78,16 @@ jobs:
           name: astromind-daily
           path: outputs/
           if-no-files-found: warn
+
+      - name: Refresh public dashboard
+        if: env.OPENROUTER_API_KEY != ''
+        run: |
+          python scripts/build_docs.py --out docs/index.html
+          git config user.name "astromind-bot"
+          git config user.email "astromind@users.noreply.github.com"
+          git add docs/index.html
+          git diff --cached --quiet || git commit -m "chore: refresh intuitive dashboard"
+          git push
 
       - name: Persist reports (private repos only)
         if: vars.COMMIT_OUTPUTS == 'true'
