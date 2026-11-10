@@ -248,9 +248,9 @@ Copy-Item profiles.local\profiles.template.json profiles.local\profiles.json
 
 | Workflow | التوقيت | ماذا يفعل |
 |---|---|---|
-| `daily_personal_guide.yml` | يوميًا 06:00 بتوقيت الرياض | بطاقة اليوم |
-| `weekly_synastry_report.yml` | الأحد 07:00 | موجز الأسبوع + تقويم |
-| `monthly_report.yml` | أول الشهر 08:00 | الدليل الشهري + الأدلة + التقويم |
+| `daily_personal_guide.yml` | يوميًا 06:00 بتوقيت الرياض | بطاقة اليوم + قراءة قصيرة + تحديث الصفحة العامة |
+| `weekly_synastry_report.yml` | الأحد 07:00 | موجز الأسبوع + تقويم + قراءة قياسية |
+| `monthly_report.yml` | أول الشهر 08:00 | الدليل الشهري + الأدلة + التقويم + قراءة عميقة |
 | `build_manuals.yml` | يدويًا | إعادة بناء الأدلة |
 | `ci.yml` | عند الدفع/PR | اختبارات + smoke test |
 
