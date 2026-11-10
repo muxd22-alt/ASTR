@@ -15,8 +15,10 @@ from typing import Callable
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = "google/gemma-4-31b-it:free"
+DEFAULT_FALLBACK_MODELS = ("google/gemma-4-26b-a4b-it:free",)
 ENV_KEY = "OPENROUTER_API_KEY"
 ENV_MODEL = "OPENROUTER_MODEL"
+ENV_FALLBACK_MODELS = "OPENROUTER_FALLBACK_MODELS"
 
 Transport = Callable[[urllib.request.Request, float], bytes]
 
@@ -61,51 +63,70 @@ def chat(
     api_key: str | None = None,
     timeout: float = 90.0,
     transport: Transport | None = None,
-    retries: int = 1,
+    retries: int = 2,
+    fallback_models: tuple[str, ...] | None = None,
 ) -> str:
     """Call OpenRouter and return the assistant message.
 
-    A missing key raises immediately so callers can fall back locally.
+    A missing key raises immediately so callers can fall back locally. Free
+    models can be rate-limited upstream, so a free fallback model is tried
+    after the primary model is exhausted.
     """
     key = (api_key or os.environ.get(ENV_KEY, "")).strip()
     if not key:
         raise OpenRouterError(f"{ENV_KEY} is not set")
     chosen_model = (model or os.environ.get(ENV_MODEL) or DEFAULT_MODEL).strip()
-    payload = {
-        "model": chosen_model,
-        "messages": messages,
-        "temperature": 0.8,
-        "top_p": 0.9,
-        "max_tokens": 1800,
-    }
-    data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-    request = urllib.request.Request(
-        API_URL,
-        data=data,
-        method="POST",
-        headers={
-            "Authorization": f"Bearer {key}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://github.com/muxd22-alt/ASTR",
-            "X-Title": "ASTR",
-        },
-    )
+    if fallback_models is None:
+        raw_fallback = os.environ.get(ENV_FALLBACK_MODELS, "").strip()
+        if raw_fallback:
+            fallback_models = tuple(
+                item.strip() for item in raw_fallback.split(",") if item.strip()
+            )
+        else:
+            fallback_models = DEFAULT_FALLBACK_MODELS
+    models = [chosen_model]
+    for candidate in fallback_models:
+        if candidate and candidate not in models:
+            models.append(candidate)
+
     send = transport or _default_transport
     last_error: Exception | None = None
-    for attempt in range(retries + 1):
-        try:
-            raw = send(request, timeout)
-            return _decode(raw)["content"]
-        except urllib.error.HTTPError as exc:
+    for candidate_model in models:
+        payload = {
+            "model": candidate_model,
+            "messages": messages,
+            "temperature": 0.8,
+            "top_p": 0.9,
+            "max_tokens": 1800,
+        }
+        data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        for attempt in range(retries + 1):
+            request = urllib.request.Request(
+                API_URL,
+                data=data,
+                method="POST",
+                headers={
+                    "Authorization": f"Bearer {key}",
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://github.com/muxd22-alt/ASTR",
+                    "X-Title": "ASTR",
+                },
+            )
             try:
-                detail = exc.read().decode("utf-8", errors="replace")[:500]
-            except Exception:
-                detail = ""
-            last_error = RuntimeError(f"HTTP {exc.code}: {detail or exc.reason}")
-            if exc.code not in {429, 500, 502, 503, 504} or attempt >= retries:
+                raw = send(request, timeout)
+                return _decode(raw)["content"]
+            except urllib.error.HTTPError as exc:
+                try:
+                    detail = exc.read().decode("utf-8", errors="replace")[:500]
+                except Exception:
+                    detail = ""
+                last_error = RuntimeError(
+                    f"{candidate_model} HTTP {exc.code}: {detail or exc.reason}"
+                )
+                if exc.code not in {429, 500, 502, 503, 504} or attempt >= retries:
+                    break
+                time.sleep(2.0 * (attempt + 1))
+            except Exception as exc:  # network, timeout, malformed payload
+                last_error = exc
                 break
-            time.sleep(2.0)
-        except Exception as exc:  # network, timeout, malformed payload
-            last_error = exc
-            break
     raise OpenRouterError(f"OpenRouter request failed: {last_error}") from last_error

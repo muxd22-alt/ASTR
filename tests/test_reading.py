@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import urllib.error
 from datetime import date
+from io import BytesIO
 from pathlib import Path
 
 import pytest
@@ -111,6 +113,37 @@ def test_openrouter_parses_response() -> None:
     )
     assert text == "قراءة تجريبية"
     assert seen["body"]["model"] == "google/gemma-4-31b-it:free"
+
+
+def test_openrouter_falls_back_to_second_free_model() -> None:
+    models: list[str] = []
+
+    def transport(request, timeout):
+        body = json.loads(request.data.decode("utf-8"))
+        models.append(body["model"])
+        if body["model"] == "google/gemma-4-31b-it:free":
+            raise urllib.error.HTTPError(
+                request.full_url,
+                429,
+                "rate limited",
+                {},
+                BytesIO(b'{"error":{"message":"temporarily rate-limited"}}'),
+            )
+        return json.dumps(
+            {"choices": [{"message": {"content": "قراءة من النموذج البديل"}}]}
+        ).encode("utf-8")
+
+    text = chat(
+        [{"role": "user", "content": "test"}],
+        api_key="secret",
+        transport=transport,
+        retries=0,
+    )
+    assert text == "قراءة من النموذج البديل"
+    assert models == [
+        "google/gemma-4-31b-it:free",
+        "google/gemma-4-26b-a4b-it:free",
+    ]
 
 
 def test_openrouter_requires_key(monkeypatch) -> None:
