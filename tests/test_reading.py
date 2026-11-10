@@ -10,6 +10,7 @@ import pytest
 
 from astromind.cli import build_context, collect_signals
 from astromind.generators.md_builder import ReportData
+from astromind.i18n import SIGNS_AR
 from astromind.models import Bundle
 from astromind.reading import generate_reading
 from astromind.reading.facts import build_reading_facts
@@ -40,6 +41,25 @@ SIGN_ONLY = {
 }
 
 
+AUTO_PROFILE = {
+    "profiles": [
+        {
+            "name": "مثال",
+            "role": "self",
+            "house_system": "whole-sign",
+            "birth": {
+                "date": "1988-07-07",
+                "time": "00:15",
+                "tz": "Asia/Riyadh",
+                "lat": 24.7136,
+                "lon": 46.6753,
+                "time_known": True,
+            },
+        }
+    ]
+}
+
+
 def _data(day: date, *, signals=None):
     bundle = Bundle.from_dict(SIGN_ONLY)
     context = build_context(bundle)
@@ -59,6 +79,29 @@ def _data(day: date, *, signals=None):
     return context, data
 
 
+def test_auto_chart_has_precise_degrees_and_story_spine() -> None:
+    day = date(2026, 11, 10)
+    bundle = Bundle.from_dict(AUTO_PROFILE)
+    context = build_context(bundle)
+    signals = collect_signals(context, day, day, daily=True)
+    data = ReportData(
+        bundle=context.bundle,
+        charts=context.charts,
+        composite=context.composite,
+        signals=signals,
+        start=day,
+        end=day,
+        as_of=day,
+        synastry=context.synastry,
+        child_guidance={},
+    )
+    facts = build_reading_facts(context, data, "standard")
+    assert facts["profile"]["sign_only"] is False
+    assert facts["profile"]["placements"]["sun"]["degree"] != 15.0
+    assert facts["profile"]["placements"]["mercury"]["house"] == 3
+    assert facts["profile"]["story_spine"]["core_tension"]
+
+
 def test_facts_keep_missing_birth_unknown() -> None:
     context, data = _data(date(2026, 11, 10))
     facts = build_reading_facts(context, data, "standard")
@@ -75,6 +118,36 @@ def test_fallback_modes_are_progressive() -> None:
     deep = generate_reading(context, data, mode="deep", use_ai=False)
     assert "المفتاح" in short
     assert len(short) < len(standard) < len(deep)
+
+
+def test_fallback_tells_the_story_without_reciting_placements() -> None:
+    context, data = _data(date(2026, 11, 10))
+    text = generate_reading(context, data, mode="standard", use_ai=False)
+    assert "في البيت" not in text
+    assert all(sign not in text for sign in SIGNS_AR)
+
+
+def test_provider_placement_inventory_is_rejected(monkeypatch) -> None:
+    monkeypatch.setenv("OPENROUTER_API_KEY", "secret")
+    context, data = _data(date(2026, 11, 10))
+    fake = (
+        "# قراءة\n"
+        "شمسك في السرطان، وقمرك في الحمل، وعطارد في الجوزاء في البيت الثاني."
+    )
+
+    def transport(request, timeout):
+        return json.dumps({"choices": [{"message": {"content": fake}}]}).encode("utf-8")
+
+    text = generate_reading(
+        context,
+        data,
+        mode="standard",
+        use_ai=True,
+        transport=transport,
+        model="fake/model",
+    )
+    assert "عطارد في الجوزاء" not in text
+    assert "قراءة محلية مبنية على القواعد" in text
 
 
 def test_transits_respect_as_of() -> None:

@@ -15,22 +15,30 @@ sign, house, aspect, transit, birth detail, or event.
 Core rules:
 1. Write in the language requested by the user; default to Modern Standard
    Arabic with a warm, intimate, conversational tone.
-2. Use second-person address ("أنت") and connect placements into one story.
-   Never produce a dictionary list of separate zodiac descriptions.
-3. Treat astrology as a symbolic and reflective language, not a scientific
+2. The reader already knows their chart. Do NOT recite placements, zodiac
+   signs, houses, or degrees. Do NOT write sentences such as "عطارد في
+   الجوزاء في البيت الثاني". Use the chart only as hidden scaffolding.
+   Start from the supplied `story_spine` and tell the main story.
+3. Use second-person address ("أنت") and connect the material into one
+   continuous narrative. Never produce a dictionary list of separate zodiac
+   descriptions.
+4. Treat astrology as a symbolic and reflective language, not a scientific
    prediction. Do not diagnose illness, promise outcomes, or state that a
    future event is certain.
-4. If birth time is missing or the chart is sign-level only, say so plainly.
+5. If birth time is missing or the chart is sign-level only, say so plainly.
    Do not fabricate an Ascendant, houses, degrees, or precise timing.
-5. Use only the supplied transit dates and signals for the current section.
+6. Use only the supplied transit dates and signals for the current section.
    Respect the supplied as_of date; do not mention past dates as future
    warnings.
-6. Prefer depth over volume. One precise observation is better than five
+7. Prefer depth over volume. One precise observation is better than five
    generic claims. Avoid empty phrases such as "أنت شخص حساس لكنك قوي".
-7. Include emotional contradictions, relationship patterns, shadow material,
+8. Include emotional contradictions, relationship patterns, shadow material,
    strengths, and one grounded next step. Do not force every section.
-8. Return clean Markdown with a short title and 3-6 sections. No code fences,
+9. Return clean Markdown with a short title and 3-6 sections. No code fences,
    no preamble, no meta-commentary, no mention of being an AI.
+
+The central story is the product. Placements are evidence you may use
+silently, never an inventory to display.
 
 Reading modes:
 - short: 180-260 Arabic words. A 60-second spoken reflection. One central
@@ -56,6 +64,9 @@ def build_user_prompt(facts: dict, mode: str) -> str:
     return (
         "هذه حقائق محسوبة مسبقًا بواسطة محرك ASTR. لا تغيّرها ولا تخترع غيرها.\n"
         f"{_MODE_NOTE.get(mode, _MODE_NOTE['standard'])}\n\n"
+        "اقرأ `story_spine` أولًا. هذه هي السالفة الأساسية التي يجب أن تدور حولها "
+        "القراءة. لا تسرد المواضع أو الأبراج أو البيوت، ولا تحوّل النص إلى درس "
+        "فلكي. القارئ يعرف خريطته بالفعل.\n\n"
         "FACTS JSON:\n"
         + json.dumps(facts, ensure_ascii=False, indent=2)
         + "\n\nاكتب القراءة الآن بالعربية فقط."

@@ -35,7 +35,13 @@ Astronomical calculation is separate from interpretation.
 
 ## Astrological intelligence
 
-Never interpret placements as isolated dictionary entries. Connect them.
+The reader already knows their chart. Do not recite placements, zodiac signs,
+houses, or degrees, and do not write sentences like "عطارد في الجوزاء في
+البيت الثاني". Use the chart only as hidden scaffolding. Start from
+`story_spine` and tell the main story.
+
+Never interpret placements as isolated dictionary entries. Connect them
+silently.
 
 For Cancer Sun + Aries Rising + Aries Moon, do not write three separate
 descriptions. Explore the interaction between:

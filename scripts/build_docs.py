@@ -158,6 +158,16 @@ def _house_for(chart: Chart, body: str, explicit: dict[str, int]) -> int | None:
     return house_of(position.longitude, chart.houses.cusps)
 
 
+def _degree_text(longitude: float) -> str:
+    degree = longitude % 30.0
+    whole = int(degree)
+    minutes = int(round((degree - whole) * 60.0))
+    if minutes >= 60:
+        whole += 1
+        minutes = 0
+    return f"{whole}°{minutes:02d}′"
+
+
 def placement_cards(chart: Chart, profile) -> str:
     order = [
         "sun",
@@ -183,11 +193,21 @@ def placement_cards(chart: Chart, profile) -> str:
         house = _house_for(chart, body, profile.houses)
         element = element_ar(sign_element(sign))
         house_label = f"البيت {house}" if house else "بدون بيت"
+        degree_text = ""
+        if not chart.sign_only:
+            longitude = (
+                chart.positions[body].longitude
+                if body in chart.positions
+                else chart.angles.get(body)
+            )
+            if longitude is not None:
+                degree_text = f'<div class="placement-degree">{_degree_text(longitude)}</div>'
         cards.append(
             f"""
             <div class="placement">
               <div class="placement-body">{html.escape(BODIES_AR.get(body, body))}</div>
               <div class="placement-sign">{html.escape(sign_name)}</div>
+              {degree_text}
               <div class="placement-meta"><span>{html.escape(element)}</span><span>{html.escape(house_label)}</span></div>
             </div>
             """
@@ -510,6 +530,7 @@ def build_page(
   }}
   .placement-body {{ color: var(--muted); font-size: 0.82rem; }}
   .placement-sign {{ color: var(--gold-soft); font-size: 1.35rem; font-weight: 700; margin: 0.1rem 0 0.25rem; font-family: "Thmanyah Serif Display", serif; }}
+  .placement-degree {{ color: var(--muted); font-size: 0.78rem; margin-bottom: 0.15rem; font-variant-numeric: tabular-nums; }}
   .placement-meta {{ display: flex; justify-content: space-between; gap: 0.5rem; color: var(--muted); font-size: 0.76rem; }}
   .tabs {{ display: flex; flex-wrap: wrap; gap: 0.55rem; margin: 1.2rem 0 1rem; }}
   .tab {{

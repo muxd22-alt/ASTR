@@ -10,6 +10,7 @@ from astromind.engines.ephemeris import house_of
 from astromind.generators.md_builder import ReportData
 from astromind.i18n import BODIES_AR, SIGNS_AR, element_ar, sign_element, sign_of
 from astromind.models import Profile
+from astromind.reading.narrative import build_story_spine
 
 NATAL_POINTS = (
     "sun",
@@ -32,6 +33,7 @@ def _sign_payload(longitude: float) -> dict[str, object]:
     return {
         "sign": SIGNS_AR[sign],
         "element": element_ar(sign_element(sign)),
+        "element_key": sign_element(sign),
         "degree": round(longitude % 30.0, 2),
     }
 
@@ -166,6 +168,8 @@ def moon_facts(data: ReportData) -> list[dict[str, object]]:
 def build_reading_facts(context, data: ReportData, mode: str) -> dict[str, object]:
     profile = context.bundle.self_profile
     chart = context.charts[profile.id]
+    profile_facts = chart_facts(chart, profile)
+    profile_facts["story_spine"] = build_story_spine(profile_facts)
     facts: dict[str, object] = {
         "as_of": data.as_of.isoformat() if data.as_of else data.start.isoformat(),
         "period": {
@@ -173,7 +177,7 @@ def build_reading_facts(context, data: ReportData, mode: str) -> dict[str, objec
             "end": data.end.isoformat(),
         },
         "mode": mode,
-        "profile": chart_facts(chart, profile),
+        "profile": profile_facts,
         "transits": signal_facts(data),
         "moon_changes": moon_facts(data),
         "relationship": None,

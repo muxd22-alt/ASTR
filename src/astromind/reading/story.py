@@ -7,68 +7,20 @@ only rewrites those facts into prose; it cannot add or change placements.
 from __future__ import annotations
 
 import os
+import re
 import sys
 from datetime import date
 
-from astromind.generators.interpretations import (
-    MARS_ANGER,
-    MOON_NEEDS,
-    SATURN_FEAR,
-    VENUS_LOVE,
-)
-from astromind.i18n import format_date_short
+from astromind.i18n import SIGNS_AR, format_date_short
 from astromind.reading.facts import build_reading_facts
 from astromind.reading.openrouter import ENV_KEY, OpenRouterError, chat
 from astromind.reading.prompts import SYSTEM_PROMPT, build_user_prompt
 
-ELEMENT_KEY = {
-    "ناري": "fire",
-    "ترابي": "earth",
-    "هوائي": "air",
-    "مائي": "water",
-}
-
-SUN_TONE = {
-    "fire": "طاقة تبدأ قبل أن تجد الكلمات، وحاجة أن تُختبر لا أن تُدار",
-    "earth": "حاجة إلى أثر ملموس وثبات يُبنى خطوة بخطوة",
-    "air": "عقل يربط الأفكار ويحتاج حوارًا قبل أن يستقر",
-    "water": "ذاكرة عاطفية عميقة وحاسة تلتقط ما لم يُقل",
-}
-
-MOON_TONE = {
-    "fire": "استجابة سريعة واشتعال عاطفي ثم حاجة للحركة",
-    "earth": "احتياج إلى روتين ملموس ووعود صغيرة تُنفَّذ",
-    "air": "احتياج إلى كلام ومساحة وتنويع قبل الهدوء",
-    "water": "احتياج إلى قرب واحتواء وطمأنينة قبل الحل",
-}
-
-ASC_TONE = {
-    "fire": "تدخل المشهد مباشرة وتجعل الآخرين يرون المبادرة أولًا",
-    "earth": "تظهر هادئًا وعمليًا، وتثق بما يُبنى لا بما يُقال",
-    "air": "تظهر خفيفًا واجتماعيًا، وتفتح الأبواب بالكلام",
-    "water": "تظهر متحفظًا ثم تكشف عمقك لمن يربح ثقتك",
-}
+PLACEMENT_INVENTORY = re.compile(r"في\s+البيت")
 
 
-def _placement(facts: dict, body: str) -> dict:
-    return facts.get("profile", {}).get("placements", {}).get(body, {})
-
-
-def _element(facts: dict, body: str) -> str:
-    return ELEMENT_KEY.get(str(_placement(facts, body).get("element", "")), "water")
-
-
-def _sign(facts: dict, body: str) -> str:
-    return str(_placement(facts, body).get("sign") or "غير متاح")
-
-
-def _house(facts: dict, body: str) -> str:
-    house = _placement(facts, body).get("house")
-    return f" في البيت {house}" if house else ""
-
-
-def _angles(facts: dict) -> dict:
-    return facts.get("profile", {}).get("angles", {})
+def _spine(facts: dict) -> dict:
+    return facts.get("profile", {}).get("story_spine", {})
 
 
 def _future_transits(facts: dict) -> list[dict]:
@@ -81,21 +33,18 @@ def _transit_line(row: dict) -> str:
 
 
 def _opening(facts: dict) -> str:
-    sun, moon, asc = _sign(facts, "sun"), _sign(facts, "moon"), _sign(facts, "asc")
-    sun_e, moon_e, asc_e = _element(facts, "sun"), _element(facts, "moon"), _element(facts, "asc")
-    asc_text = f"، وطالعك {asc}" if asc != "غير متاح" else ""
+    spine = _spine(facts)
     return (
-        f"تجمع خريطتك بين شمس {sun}{_house(facts, 'sun')} وقمر {moon}{_house(facts, 'moon')}"
-        f"{asc_text}. شمسك تحمل {SUN_TONE[sun_e]}، وقمرك يتحرك بـ{MOON_TONE[moon_e]}، "
-        f"بينما طالعك يجعلك {ASC_TONE[asc_e]}. "
-        "القراءة هنا لا تفصل هذه الطبقات؛ بل تحاول أن تسمع الحوار بينها."
-    )
+        f"{spine.get('core_tension', '')} "
+        f"{spine.get('outer_style', '')} "
+        "القراءة هنا لا تشرح خريطتك؛ إنها تحاول أن تسمع القصة التي تعيشها."
+    ).strip()
 
 
 def _inner(facts: dict) -> str:
-    moon_e = _element(facts, "moon")
+    spine = _spine(facts)
     return (
-        f"احتياجك العاطفي الأساسي: {MOON_NEEDS[moon_e]} "
+        f"احتياجك العاطفي الأساسي: {spine.get('core_need', '')} "
         "قد يبدو هذا الاحتياج بسيطًا، لكنه يصبح واضحًا في اللحظات التي تشعر فيها "
         "أن أحدًا لا يرى ما تحتاجه فعلًا. حين تهدأ، اسأل: هل أطلب القرب بطريقة "
         "يمكن للآخر أن يفهمها، أم أطلب أن يخمّن؟"
@@ -103,21 +52,19 @@ def _inner(facts: dict) -> str:
 
 
 def _outer(facts: dict) -> str:
-    venus_e = _element(facts, "venus")
-    mars_e = _element(facts, "mars")
+    spine = _spine(facts)
     return (
-        f"في العلاقات، زهرتك تميل إلى {VENUS_LOVE[venus_e]} "
-        f"أما مريخك فيخرج عند الاحتكاك بـ{MARS_ANGER[mars_e]} "
+        f"{spine.get('relationship_pattern', '')} "
         "الفرق بين ما تحتاجه وما تُظهره هو غالبًا مساحة سوء الفهم. "
         "قل احتياجك قبل أن تختبره بالصمت."
     )
 
 
 def _shadow(facts: dict) -> str:
-    saturn_e = _element(facts, "saturn")
+    spine = _spine(facts)
     return (
         "الظل هنا ليس عيبًا؛ إنه الطريقة التي تحمي بها نفسك من ألم قديم. "
-        f"{SATURN_FEAR[saturn_e]} "
+        f"{spine.get('shadow', '')} "
         "راقب اللحظة التي تنسحب فيها قبل أن تشرح، أو التي تشرح فيها أكثر من "
         "حاجتك. كلاهما محاولة للسيطرة على ألم لا يحتاج سيطرة، بل حضورًا."
     )
@@ -132,14 +79,8 @@ def _current(facts: dict) -> str:
 
 
 def _gift(facts: dict) -> str:
-    sun_e = _element(facts, "sun")
-    gifts = {
-        "fire": "قدرتك على بدء ما يخافه الآخرون، وإشعال حركة في مكان ساكن.",
-        "earth": "قدرتك على تحويل النية إلى واقع صغير ملموس، مرة بعد مرة.",
-        "air": "قدرتك على رؤية العلاقة بين الأشياء وصياغة ما يعجز عنه غيرك.",
-        "water": "قدرتك على احتواء ما لا يُقال، ومنح الآخر إحساسًا بأنه مرئي.",
-    }
-    return gifts[sun_e]
+    spine = _spine(facts)
+    return spine.get("gift", "قدرتك على الصبر والملاحظة قبل أن تتحرك.")
 
 
 def _closing(facts: dict) -> str:
@@ -147,19 +88,6 @@ def _closing(facts: dict) -> str:
         "لا تحتاج أن تحل نفسك اليوم. اختر جملة واحدة صادقة تقولها لشخص آمن، "
         "وخطوة واحدة صغيرة تثبت أنك تسمع نفسك. التغيير الحقيقي غالبًا بهذا الحجم."
     )
-
-
-def _aspects_note(facts: dict) -> str:
-    aspects = facts.get("profile", {}).get("aspects", [])
-    if not aspects:
-        return ""
-    rows = []
-    for aspect in aspects[:4]:
-        rows.append(
-            f"- {aspect.get('a')} و{aspect.get('b')} في {aspect.get('aspect')} "
-            f"(orb {aspect.get('orb')})"
-        )
-    return "\n".join(rows)
 
 
 def build_fallback_story(facts: dict, mode: str) -> str:
@@ -194,9 +122,6 @@ def build_fallback_story(facts: dict, mode: str) -> str:
             "موقف يشعرك أنك غير مرئي، أو لحظة تنسحب فيها قبل أن تشرح. "
             "الوعي بهذا النمط لا يلغيه فورًا، لكنه يمنحك خيارًا صغيرًا في المرة القادمة."
         )
-        aspects = _aspects_note(facts)
-        if aspects:
-            parts.append("## حوار الخريطة\n" + aspects)
         moon_changes = facts.get("moon_changes", [])
         if moon_changes:
             moon_lines = [
@@ -207,6 +132,12 @@ def build_fallback_story(facts: dict, mode: str) -> str:
 
     parts.append("## الرسالة\n" + _closing(facts))
     return "\n\n".join(parts).strip() + "\n"
+
+
+def _recites_placements(text: str) -> bool:
+    if PLACEMENT_INVENTORY.search(text):
+        return True
+    return any(sign in text for sign in SIGNS_AR)
 
 
 def generate_reading(
@@ -231,6 +162,8 @@ def generate_reading(
             )
             if not any("\u0600" <= char <= "\u06FF" for char in text):
                 raise OpenRouterError("provider returned a non-Arabic reading")
+            if _recites_placements(text):
+                raise OpenRouterError("provider recited placements instead of the story")
             return text
         except OpenRouterError as exc:
             print(f"warning: OpenRouter fallback: {exc}", file=sys.stderr)
