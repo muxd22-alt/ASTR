@@ -291,7 +291,7 @@ python -m astromind run-all
 
 - **المفتاح:** أضف GitHub Secret باسم `OPENROUTER_API_KEY`.
 - **الموديل الافتراضي:** `google/gemma-4-31b-it:free`، ويمكن تغييره عبر `OPENROUTER_MODEL` أو `--model`.
-- **نموذج بديل تلقائي:** `google/gemma-4-26b-a4b-it:free` عند rate limit، ويمكن تخصيصه عبر `OPENROUTER_FALLBACK_MODELS`.
+- **نموذج بديل تلقائي:** `google/gemma-4-26b-a4b-it:free` ثم نماذج مجانية أخرى عند rate limit، ويمكن تخصيصها عبر `OPENROUTER_FALLBACK_MODELS`.
 - **الأمر:**
   ```bash
   python -m astromind story --mode short       # 60 ثانية

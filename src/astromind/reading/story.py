@@ -221,7 +221,7 @@ def generate_reading(
     facts = build_reading_facts(context, data, mode)
     if use_ai and os.environ.get(ENV_KEY, "").strip():
         try:
-            return chat(
+            text = chat(
                 [
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": build_user_prompt(facts, mode)},
@@ -229,6 +229,9 @@ def generate_reading(
                 model=model,
                 transport=transport,
             )
+            if not any("\u0600" <= char <= "\u06FF" for char in text):
+                raise OpenRouterError("provider returned a non-Arabic reading")
+            return text
         except OpenRouterError as exc:
             print(f"warning: OpenRouter fallback: {exc}", file=sys.stderr)
     text = build_fallback_story(facts, mode)

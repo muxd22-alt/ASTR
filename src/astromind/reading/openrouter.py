@@ -15,7 +15,11 @@ from typing import Callable
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = "google/gemma-4-31b-it:free"
-DEFAULT_FALLBACK_MODELS = ("google/gemma-4-26b-a4b-it:free",)
+DEFAULT_FALLBACK_MODELS = (
+    "google/gemma-4-26b-a4b-it:free",
+    "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "xingchen-agi/xing4.0-29b-a4b:free",
+)
 ENV_KEY = "OPENROUTER_API_KEY"
 ENV_MODEL = "OPENROUTER_MODEL"
 ENV_FALLBACK_MODELS = "OPENROUTER_FALLBACK_MODELS"
