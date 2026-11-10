@@ -7,6 +7,7 @@ only rewrites those facts into prose; it cannot add or change placements.
 from __future__ import annotations
 
 import os
+import sys
 from datetime import date
 
 from astromind.generators.interpretations import (
@@ -228,8 +229,8 @@ def generate_reading(
                 model=model,
                 transport=transport,
             )
-        except OpenRouterError:
-            pass
+        except OpenRouterError as exc:
+            print(f"warning: OpenRouter fallback: {exc}", file=sys.stderr)
     text = build_fallback_story(facts, mode)
     if use_ai:
         text += (

@@ -97,7 +97,11 @@ def chat(
             raw = send(request, timeout)
             return _decode(raw)["content"]
         except urllib.error.HTTPError as exc:
-            last_error = exc
+            try:
+                detail = exc.read().decode("utf-8", errors="replace")[:500]
+            except Exception:
+                detail = ""
+            last_error = RuntimeError(f"HTTP {exc.code}: {detail or exc.reason}")
             if exc.code not in {429, 500, 502, 503, 504} or attempt >= retries:
                 break
             time.sleep(2.0)
