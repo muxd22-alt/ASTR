@@ -209,7 +209,7 @@ Copy-Item profiles.local\profiles.template.json profiles.local\profiles.json
   "house_system": "whole-sign",
   "birth": {
     "date": "1988-07-07",
-    "time": "00:00",
+    "time": "12:15",
     "tz": "Asia/Riyadh",
     "lat": 24.7136,
     "lon": 46.6753,
